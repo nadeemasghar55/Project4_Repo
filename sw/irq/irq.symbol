@@ -1,0 +1,122 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           RISC-V
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          9524 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         3
+  Size of section headers:           40 (bytes)
+  Number of section headers:         9
+  Section header string table index: 8
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00000000 001000 0005fc 00  AX  0   0 16
+  [ 2] .data             PROGBITS        00020000 002000 000010 00  WA  0   0  1
+  [ 3] .bss              NOBITS          00020010 002010 000010 00  WA  0   0  4
+  [ 4] .comment          PROGBITS        00000000 002010 00000f 01  MS  0   0  1
+  [ 5] .riscv.attributes RISCV_ATTRIBUTE 00000000 00201f 000025 00      0   0  1
+  [ 6] .symtab           SYMTAB          00000000 002044 000360 10      7  21  4
+  [ 7] .strtab           STRTAB          00000000 0023a4 000147 00      0   0  1
+  [ 8] .shstrtab         STRTAB          00000000 0024eb 000047 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  D (mbind), p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  RISCV_ATTRIBUT 0x00201f 0x00000000 0x00000000 0x00025 0x00000 R   0x1
+  LOAD           0x001000 0x00000000 0x00000000 0x005fc 0x005fc R E 0x1000
+  LOAD           0x002000 0x00020000 0x00020000 0x00010 0x00020 RW  0x1000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .riscv.attributes 
+   01     .text 
+   02     .data .bss 
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+
+The decoding of unwind sections for machine type RISC-V is not currently supported.
+
+Symbol table '.symtab' contains 54 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 SECTION LOCAL  DEFAULT    1 .text
+     2: 00020000     0 SECTION LOCAL  DEFAULT    2 .data
+     3: 00020010     0 SECTION LOCAL  DEFAULT    3 .bss
+     4: 00000000     0 SECTION LOCAL  DEFAULT    4 .comment
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 .riscv.attributes
+     6: 00000000     0 FILE    LOCAL  DEFAULT  ABS startup.o
+     7: 00000000     0 NOTYPE  LOCAL  DEFAULT    1 $x
+     8: 00000280     0 NOTYPE  LOCAL  DEFAULT    1 trap_handler
+     9: 00000020     0 NOTYPE  LOCAL  DEFAULT    1 _bss_clear
+    10: 00000280     0 NOTYPE  LOCAL  DEFAULT    1 $x
+    11: 000002c0     0 NOTYPE  LOCAL  DEFAULT    1 _trap_handler
+    12: 00000428     0 NOTYPE  LOCAL  DEFAULT    1 _trap_ebreak
+    13: 00000374     0 NOTYPE  LOCAL  DEFAULT    1 _trap_ecall
+    14: 00000000     0 FILE    LOCAL  DEFAULT  ABS irq.c
+    15: 0000003c     0 NOTYPE  LOCAL  DEFAULT    1 $x
+    16: 00000118     0 NOTYPE  LOCAL  DEFAULT    1 $x
+    17: 00000254     0 NOTYPE  LOCAL  DEFAULT    1 $d
+    18: 0000026c     0 NOTYPE  LOCAL  DEFAULT    1 $x
+    19: 00000000     0 FILE    LOCAL  DEFAULT  ABS syscall.c
+    20: 000004dc     0 NOTYPE  LOCAL  DEFAULT    1 $x
+    21: 000005f4     8 FUNC    GLOBAL DEFAULT    1 _getpid
+    22: 000004dc    16 FUNC    GLOBAL DEFAULT    1 _putchar
+    23: 00020008     0 NOTYPE  GLOBAL DEFAULT    2 ___DTOR_LIST__
+    24: 000005fc     0 NOTYPE  GLOBAL DEFAULT    1 _text_end
+    25: 00020010     0 NOTYPE  GLOBAL DEFAULT    2 __DTOR_END__
+    26: 00000524     8 FUNC    GLOBAL DEFAULT    1 _fstat
+    27: 00020010     0 NOTYPE  GLOBAL DEFAULT    3 _bss_start
+    28: 00000000     0 NOTYPE  GLOBAL DEFAULT    1 _text_start
+    29: 00020010     4 OBJECT  GLOBAL DEFAULT    3 heap_ptr
+    30: 00000590     8 FUNC    GLOBAL DEFAULT    1 _isatty
+    31: 000004f8     8 FUNC    GLOBAL DEFAULT    1 _open
+    32: 00000598    84 FUNC    GLOBAL DEFAULT    1 _sbrk
+    33: 00020020     0 NOTYPE  GLOBAL DEFAULT    3 _bss_end
+    34: 00020000     0 NOTYPE  GLOBAL DEFAULT    2 __CTOR_LIST__
+    35: 00000000     0 NOTYPE  GLOBAL DEFAULT    1 _start
+    36: 00020000     0 NOTYPE  GLOBAL DEFAULT    2 _data_start
+    37: 00000534     8 FUNC    GLOBAL DEFAULT    1 _lseek
+    38: 00020000     0 NOTYPE  GLOBAL DEFAULT    2 ___CTOR_LIST__
+    39: 00020010     0 NOTYPE  GLOBAL DEFAULT    2 _data_end
+    40: 000004ec    12 FUNC    GLOBAL DEFAULT    1 _getchar
+    41: 00000118   352 FUNC    GLOBAL DEFAULT    1 main
+    42: 00020008     0 NOTYPE  GLOBAL DEFAULT    2 __CTOR_END__
+    43: 00020008     0 NOTYPE  GLOBAL DEFAULT    2 __DTOR_LIST__
+    44: 00020014    12 OBJECT  GLOBAL DEFAULT    3 result
+    45: 00000500    36 FUNC    GLOBAL DEFAULT    1 _write
+    46: 00020020     0 NOTYPE  GLOBAL DEFAULT    4 _end
+    47: 00000580    16 FUNC    GLOBAL DEFAULT    1 exit
+    48: 000005ec     8 FUNC    GLOBAL DEFAULT    1 _kill
+    49: 0000053c    52 FUNC    GLOBAL DEFAULT    1 _read
+    50: 00000570    16 FUNC    GLOBAL DEFAULT    1 _exit
+    51: 00040000     0 NOTYPE  GLOBAL DEFAULT  ABS _stack
+    52: 0000003c   220 FUNC    GLOBAL DEFAULT    1 user_trap_handler
+    53: 0000052c     8 FUNC    GLOBAL DEFAULT    1 _close
+
+No version information found in this file.
+Attribute Section: riscv
+File Attributes
+  Tag_RISCV_stack_align: 16-bytes
+  Tag_RISCV_arch: "rv32i2p0_m2p0"
+  Tag_RISCV_priv_spec: 1
+  Tag_RISCV_priv_spec_minor: 11
