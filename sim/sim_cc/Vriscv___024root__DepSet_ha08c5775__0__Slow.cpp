@@ -82,7 +82,7 @@ VL_ATTR_COLD void Vriscv___024root___initial__TOP__0(Vriscv___024root* vlSelf) {
         VL_FCLOSE_I(vlSelf->testbench__DOT__imem__DOT__file); vlSelf->testbench__DOT__imem__DOT__file = 0;
     } else {
         VL_WRITEF("Warning: can not open file imem.bin\n");
-        VL_FINISH_MT("../rtl/../testbench/memmodel.v", 113, "");
+        VL_FINISH_MT("../rtl/../testbench/memmodel.v", 236, "");
     }
     vlSelf->testbench__DOT__dmem__DOT__file = VL_FOPEN_NN(
                                                           std::string("dmem.bin")

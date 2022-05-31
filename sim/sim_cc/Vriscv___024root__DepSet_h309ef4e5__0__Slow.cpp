@@ -41,7 +41,11 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
            | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
         = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush)
-            ? 0x13U : vlSelf->testbench__DOT__imem_rdata);
+            ? 0x13U : ((IData)(vlSelf->testbench__DOT__imem__DOT__aligned)
+                        ? vlSelf->testbench__DOT__imem__DOT__rdata1
+                        : ((vlSelf->testbench__DOT__imem__DOT__rdata2 
+                            << 0x10U) | (vlSelf->testbench__DOT__imem__DOT__rdata1 
+                                         >> 0x10U))));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_branch = 0U;
     if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal)))) {
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)))) {
@@ -1016,7 +1020,6 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__dump = 0;
     vlSelf->testbench__DOT__imem_ready = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__imem_rresp = VL_RAND_RESET_I(1);
-    vlSelf->testbench__DOT__imem_rdata = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__dmem_wready = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__dmem_rready = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__dmem_rresp = VL_RAND_RESET_I(1);
@@ -1032,6 +1035,8 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__top__DOT__drdata = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__data_sel = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__sw_irq = VL_RAND_RESET_I(1);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__illegal_com_ins = VL_RAND_RESET_I(1);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__compressed_ins = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush = VL_RAND_RESET_I(1);
@@ -1083,6 +1088,7 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_sw_irq = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_interrupt = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul = VL_RAND_RESET_I(1);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_com = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_alu2reg = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_result = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_alu_op = VL_RAND_RESET_I(3);
@@ -1133,6 +1139,9 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
         vlSelf->testbench__DOT__imem__DOT__ram[__Vi0] = VL_RAND_RESET_I(32);
     }
     vlSelf->testbench__DOT__imem__DOT__data = VL_RAND_RESET_I(32);
+    vlSelf->testbench__DOT__imem__DOT__rdata1 = VL_RAND_RESET_I(32);
+    vlSelf->testbench__DOT__imem__DOT__rdata2 = VL_RAND_RESET_I(32);
+    vlSelf->testbench__DOT__imem__DOT__aligned = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__imem__DOT__i = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__imem__DOT__file = 0;
     vlSelf->testbench__DOT__imem__DOT__r = VL_RAND_RESET_I(32);

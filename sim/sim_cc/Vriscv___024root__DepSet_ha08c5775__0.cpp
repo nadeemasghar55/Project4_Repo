@@ -412,9 +412,14 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__1(Vriscv___024root* vlSelf) 
         }
     }
     if (vlSelf->testbench__DOT__imem_ready) {
-        vlSelf->testbench__DOT__imem_rdata = vlSelf->testbench__DOT__imem__DOT__ram
-            [(0x7fffU & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                         >> 2U))];
+        vlSelf->testbench__DOT__imem__DOT__rdata2 = 
+            vlSelf->testbench__DOT__imem__DOT__ram[
+            (0x7fffU & ((IData)(1U) + (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       >> 2U)))];
+        vlSelf->testbench__DOT__imem__DOT__rdata1 = 
+            vlSelf->testbench__DOT__imem__DOT__ram[
+            (0x7fffU & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                        >> 2U))];
     }
     if (vlSelf->testbench__DOT__wready) {
         if ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_wstrb))) {
