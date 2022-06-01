@@ -1,6 +1,7 @@
     .section .reset, "ax"
     .global _start
 _start:
+
     la      t0, trap_handler
     csrw    mtvec, t0
     csrrsi  zero, mtvec, 1      // set vector based trap

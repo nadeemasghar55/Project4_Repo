@@ -15,6 +15,7 @@ VL_ATTR_COLD void Vriscv___024root___initial__TOP__0(Vriscv___024root* vlSelf) {
     // Init
     VlWide<3>/*95:0*/ __Vtemp_h80bc0284__0;
     // Body
+    VL_WRITEF("******************************************************* IMEM/DMEM Different ************************************************************************\n");
     if (VL_UNLIKELY((0U != VL_TESTPLUSARGS_I("help")))) {
         VL_WRITEF("\n    +no-meminit   memory uninitialized\n    +dump         dump vcd file\n    +trace        generate trace log\n\n");
         VL_FINISH_MT("../rtl/../testbench/testbench.v", 101, "");
