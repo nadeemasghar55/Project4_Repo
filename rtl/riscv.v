@@ -75,14 +75,14 @@ module riscv (
 
 // Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
 
-//`define IF_NEXT_PC (4)
-//`define EX_NEXT_PC (4)
+`define IF_NEXT_PC (4)
+`define EX_NEXT_PC (4)
 
-    wire 	     [31:0] IF_NEXT_PC;
-    wire 	     [31:0] EX_NEXT_PC;
+//    wire 	     [31:0] IF_NEXT_PC;
+//    wire 	     [31:0] EX_NEXT_PC;
     
-    assign IF_NEXT_PC = compressed_ins ? 2 : 4;
-    assign EX_NEXT_PC = compressed_ins ? 2 : 4;
+//    assign IF_NEXT_PC = compressed_ins ? 2 : 4;
+//    assign EX_NEXT_PC = compressed_ins ? 2 : 4;
     
 // Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
 
@@ -146,7 +146,11 @@ module riscv (
     wire                    ex_timer_irq;
     wire                    ex_sw_irq;
     wire                    ex_interrupt;
-
+    
+    //Modification for C
+    reg                     ex_c_valid;
+    //
+    
 `ifdef RV32M_ENABLED
     reg                     ex_mul;
 `endif // RV32M_ENABLED
@@ -193,9 +197,22 @@ module riscv (
 
     integer                 i;
 
+
 assign if_insn              = imem_rdata;							//Reading 16/32 Bit Inst. from Inst. Memory and saving it in if_inst
 
-assign inst                 = flush ? NOP : if_insn;						//In case of Flush, inst = NOP, otherwise, inst = if_inst
+
+//Commenting this for C 
+//assign inst                 = flush ? NOP : if_insn;						//In case of Flush, inst = NOP, otherwise, inst = if_inst
+//
+
+//Modification for C
+
+//assign inst                 = (flush || ex_c_valid) ? NOP : decomp_inst;
+//assign inst                 = (flush || ex_c_valid) ? NOP : imem_rdata;
+assign inst                 = (flush || ex_c_valid) ? NOP : if_insn;
+
+//
+
 assign if_stall             = stall_r || !imem_valid;
 assign dmem_waddr           = wb_waddr;
 assign dmem_raddr           = ex_memaddr;
@@ -258,6 +275,11 @@ always @* begin
     endcase
 end
 
+//Modification for C
+
+wire c_valid = compressed_ins && !illegal_com_ins;
+
+//
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         ex_imm              <= 32'h0;
@@ -285,8 +307,11 @@ always @(posedge clk or negedge resetb) begin
         `endif // RV32M_ENABLED
         
         //Modified for C extension
+        
         //`ifdef RV32C_ENABLED
         //ex_com              <= 1'b0;
+        
+        ex_c_valid          <= 1'b0;
         //`endif // RV32C_ENABLED
         
         // Modification Required for ex_compress <= 1'b0;
@@ -323,6 +348,12 @@ always @(posedge clk or negedge resetb) begin
                                (inst[`FUNC3] == 3'b000);
         ex_system_op        <= inst[`OPCODE] == OP_SYSTEM;
         ex_pc               <= if_pc;
+        
+        //Modification for C
+        
+        ex_c_valid          <= c_valid;
+        
+        //
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
                                  (inst[`OPCODE] == OP_JAL   )||
@@ -344,12 +375,24 @@ always @(posedge clk or negedge resetb) begin
                                  `ifdef RV32M_ENABLED
                                  ((inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h01)) ||
                                  `endif // RV32M_ENABLED
-                                 `ifdef RV32C_ENABLED
-                                 (!illegal_com_ins) ||
-                                 `endif // RV32C_ENABLED
+                                 //`ifdef RV32C_ENABLED
+                                 //(!illegal_com_ins) ||
+                                 //`endif // RV32C_ENABLED
                                  
                                  (inst[`OPCODE] == OP_FENCE )||
-                                 (inst[`OPCODE] == OP_SYSTEM));
+                                 
+                                 //Commented this line for C
+                                 
+                                 //(inst[`OPCODE] == OP_SYSTEM))
+                                 
+                                 //
+                                 
+                                 //Modified this for C
+                                 
+                                 (inst[`OPCODE] == OP_SYSTEM)||
+                                 (c_valid);
+                                 
+                                 //
         `ifdef RV32M_ENABLED
         ex_mul              <= (inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h1);
         `endif // RV32M_ENABLED
@@ -425,7 +468,7 @@ assign ex_systemcall        = ex_system && !ex_flush;
 
 always @* begin
     branch_taken  = !ex_flush;
-    next_pc       = fetch_pc + IF_NEXT_PC;
+    next_pc       = fetch_pc + `IF_NEXT_PC;
     ex_ill_branch = 1'b0;
 
     case(1'b1)
@@ -435,32 +478,32 @@ always @* begin
             case(ex_alu_op)
                 OP_BEQ : begin
                             next_pc = (result_subs[32: 0] == 'd0) ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (result_subs[32: 0] != 'd0) branch_taken = 1'b0;
                          end
                 OP_BNE : begin
                             next_pc = (result_subs[32: 0] != 'd0) ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (result_subs[32: 0] == 'd0) branch_taken = 1'b0;
                          end
                 OP_BLT : begin
                             next_pc = result_subs[32] ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (!result_subs[32]) branch_taken = 1'b0;
                          end
                 OP_BGE : begin
                             next_pc = !result_subs[32] ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (result_subs[32]) branch_taken = 1'b0;
                          end
                 OP_BLTU: begin
                             next_pc = result_subu[32] ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (!result_subu[32]) branch_taken = 1'b0;
                          end
                 OP_BGEU: begin
                             next_pc = !result_subu[32] ?
-                                      ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      ex_pc + ex_imm : fetch_pc + `IF_NEXT_PC;
                             if (result_subu[32]) branch_taken = 1'b0;
                          end
                 default: begin
@@ -509,8 +552,8 @@ assign result_remu[31: 0]   = (alu_op2 == 32'h00000000) ? alu_op1 :
 always @* begin
     case(1'b1)
         ex_memwr:   ex_result           = alu_op2;
-        ex_jal:     ex_result           = ex_pc + EX_NEXT_PC;
-        ex_jalr:    ex_result           = ex_pc + EX_NEXT_PC;
+        ex_jal:     ex_result           = ex_pc + `EX_NEXT_PC;
+        ex_jalr:    ex_result           = ex_pc + `EX_NEXT_PC;
         ex_lui:     ex_result           = ex_imm;
         ex_auipc:   ex_result           = ex_pc + ex_imm;
         ex_csr:     ex_result           = ex_csr_read;
@@ -558,7 +601,14 @@ always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         fetch_pc            <= RESETVEC;
     end else if (!ex_stall) begin
-        fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   :{next_pc[31:1], 1'b0};
+        
+        //Commented for C
+        //fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   :{next_pc[31:1], 1'b0};
+        //
+	//Modified for C
+	fetch_pc            <= (ex_flush) ? (fetch_pc + 4) : (ex_trap)  ? (ex_trap_pc) : (c_valid)  ? (if_pc    + 2) :{next_pc[31:1], 1'b0};
+	//        
+        
     end
 end
 
