@@ -2,7 +2,7 @@
 include ../common/Makefile.common
 
 EXE      = .elf
-SRC      = hello.s
+SRC      = hello.c
 CFLAGS  += -L../common
 LDFLAGS += -T ../common/default.ld
 TARGET   = hello
