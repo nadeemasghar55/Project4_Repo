@@ -52,7 +52,14 @@ module top (
     input                   dmem_rresp,
     input           [31: 0] dmem_rdata,
 
-    output                  ex_irq
+    output                  ex_irq  //,  
+    
+    
+    // Modification for C-Extension
+    
+    //input 	     [31:0] ins	
+    
+    ////////////////////////////////	
 );
 
     `include                "opcode.vh"
@@ -86,6 +93,15 @@ module top (
     reg                     data_sel;
     wire                    sw_irq;
 
+
+	// Modification for C-Extension
+     
+    wire	    [31: 0] imem_rdata_decompressed;
+    wire		    illegal_ins_flag;
+    wire		    compressed_ins_flag;
+    
+    //
+     
     assign dmem_wready      = dwready && (dwaddr[31:28] != MMIO_BASE);
     assign dwvalid          = (dwaddr[31:28] == MMIO_BASE) ? twvalid : dmem_wvalid;
     assign dmem_waddr       = dwaddr;
@@ -122,7 +138,8 @@ end
         .imem_valid         (imem_valid),
         .imem_addr          (imem_addr),
         .imem_rresp         (imem_rresp),
-        .imem_rdata         (imem_rdata),
+        .imem_rdata         (imem_rdata_decompressed),
+        //.imem_rdata         (imem_rdata),
 
         .dmem_wready        (dwready),
         .dmem_wvalid        (dwvalid),
@@ -134,8 +151,16 @@ end
         .dmem_rvalid        (drvalid),
         .dmem_raddr         (draddr),
         .dmem_rresp         (drresp),
-        .dmem_rdata         (drdata)
-    );
+        .dmem_rdata         (drdata),
+     
+        
+        // Modification for C-Extension
+        
+        .illegal_com_ins    (illegal_ins_flag),
+     	.compressed_ins     (compressed_ins_flag)
+     	
+     	/////////////////////////////////////////
+     );
 
     assign twready          = dwready && (dwaddr[31:28] == MMIO_BASE);
     assign twaddr           = dwaddr;
@@ -167,5 +192,17 @@ end
         .ex_irq             (ex_irq)
     );
 
+
+    // Modification for C-Extension
+    
+    comp_decoder comp_decoder (	
+    	.ins 		     (imem_rdata),
+    	.ins_out 	     (imem_rdata_decompressed),
+    	.illegal_ins	     (illegal_ins_flag),
+    	.compressed_ins     (compressed_ins_flag)
+    );
+    
+    //////////////////////////////////////////////////
+    
 endmodule
 

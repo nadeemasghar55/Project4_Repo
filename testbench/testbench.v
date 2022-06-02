@@ -159,7 +159,9 @@ end
 `endif // SYNTHESIS
 
 `ifdef SINGLE_RAM
-
+initial begin
+	$display("******************************************************* SINGLE RAM ************************************************************************");
+end
     wire            mem_ready;
     wire            mem_valid;
     wire            mem_we;
@@ -277,7 +279,9 @@ end
 `endif // SYNTHESIS
 
 `else // SINGLE_RAM
-
+initial begin
+	$display("******************************************************* IMEM/DMEM Different ************************************************************************");
+end
     wire            imem_ready;
     wire            imem_valid;
     wire    [31: 0] imem_addr;
@@ -336,7 +340,8 @@ end
         .dmem_rvalid(dmem_rvalid),
         .dmem_raddr (dmem_raddr),
         .dmem_rresp (dmem_rresp),
-        .dmem_rdata (dmem_rdata)
+        .dmem_rdata (dmem_rdata)//,
+        //.ins (imem_rdata)
     );
 
 `ifdef RV32C_ENABLED

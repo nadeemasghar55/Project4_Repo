@@ -22,6 +22,13 @@
 // Define it to enable RV32M multiply extension
 `define RV32M_ENABLED       1
 
+//Modification for C	
+// Define it to enable RV32C compressed instruction extension
+
+//`define RV32C_ENABLED
+//`include "comp_decoder.v"
+///////////////////////////
+
 // ============================================================
 // RISCV for imem and dmem separate port
 // ============================================================
@@ -56,14 +63,30 @@ module riscv (
     input                   dmem_rvalid,
     output          [31: 0] dmem_raddr,
     input                   dmem_rresp,
-    input           [31: 0] dmem_rdata
+    input           [31: 0] dmem_rdata	//,
+    
+    //Modified for C Extension
+    input 		     illegal_com_ins,				//flag
+    input 		     compressed_ins				//flag
+    //
 );
 
 `include "opcode.vh"
 
+// Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
+
 `define IF_NEXT_PC (4)
 `define EX_NEXT_PC (4)
 
+//    wire 	     [31:0] IF_NEXT_PC;
+//    wire 	     [31:0] EX_NEXT_PC;
+    
+//    assign IF_NEXT_PC = compressed_ins ? 2 : 4;
+//    assign EX_NEXT_PC = compressed_ins ? 2 : 4;
+    
+// Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
+
+    
     reg                     stall_r;
     wire            [31: 0] inst;
     reg                     flush;
@@ -124,9 +147,21 @@ module riscv (
     wire                    ex_sw_irq;
     wire                    ex_interrupt;
 
+	//Modification for C
+    reg                     ex_c_valid;
+    //
+
 `ifdef RV32M_ENABLED
     reg                     ex_mul;
 `endif // RV32M_ENABLED
+
+
+
+
+
+
+
+
 
     reg                     wb_alu2reg;
     reg             [31: 0] wb_result;
@@ -162,9 +197,22 @@ module riscv (
 
     integer                 i;
 
+
 assign if_insn              = imem_rdata;
 
-assign inst                 = flush ? NOP : if_insn;
+
+//Commenting this for C 
+//assign inst                 = flush ? NOP : if_insn;						//In case of Flush, inst = NOP, otherwise, inst = if_inst
+//
+
+//Modification for C
+
+//assign inst                 = (flush || ex_c_valid) ? NOP : decomp_inst;
+//assign inst                 = (flush || ex_c_valid) ? NOP : imem_rdata;
+assign inst                 = (flush || ex_c_valid) ? NOP : if_insn;
+
+//
+
 assign if_stall             = stall_r || !imem_valid;
 assign dmem_waddr           = wb_waddr;
 assign dmem_raddr           = ex_memaddr;
@@ -227,6 +275,11 @@ always @* begin
     endcase
 end
 
+//Modification for C
+
+wire c_valid = compressed_ins && !illegal_com_ins;
+
+//
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         ex_imm              <= 32'h0;
@@ -252,6 +305,17 @@ always @(posedge clk or negedge resetb) begin
         `ifdef RV32M_ENABLED
         ex_mul              <= 1'b0;
         `endif // RV32M_ENABLED
+        
+        //Modified for C extension
+        
+        //`ifdef RV32C_ENABLED
+        //ex_com              <= 1'b0;
+        
+        ex_c_valid          <= 1'b0;
+        //`endif // RV32C_ENABLED
+        
+        // Modification Required for ex_compress <= 1'b0;
+        
     end else if (!if_stall) begin
         ex_imm              <= imm;
         ex_imm_sel          <= (inst[`OPCODE] == OP_JALR  ) ||
@@ -284,6 +348,12 @@ always @(posedge clk or negedge resetb) begin
                                (inst[`FUNC3] == 3'b000);
         ex_system_op        <= inst[`OPCODE] == OP_SYSTEM;
         ex_pc               <= if_pc;
+        
+        //Modification for C
+        
+        ex_c_valid          <= c_valid;
+        
+        //
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
                                  (inst[`OPCODE] == OP_JAL   )||
@@ -305,11 +375,32 @@ always @(posedge clk or negedge resetb) begin
                                  `ifdef RV32M_ENABLED
                                  ((inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h01)) ||
                                  `endif // RV32M_ENABLED
+                                 //`ifdef RV32C_ENABLED
+                                 //(!illegal_com_ins) ||
+                                 //`endif // RV32C_ENABLED
+                                 
                                  (inst[`OPCODE] == OP_FENCE )||
-                                 (inst[`OPCODE] == OP_SYSTEM));
+                                 
+                                 //Commented this line for C
+                                 
+                                 //(inst[`OPCODE] == OP_SYSTEM));
+                                 
+                                 //
+                                 
+                                 //Modified this for C
+                                 
+                                 (inst[`OPCODE] == OP_SYSTEM)||
+                                 (c_valid));
+                                 
+                                 //
         `ifdef RV32M_ENABLED
         ex_mul              <= (inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h1);
         `endif // RV32M_ENABLED
+        
+        //Modified for C
+       // `ifdef RV32C_ENABLED
+       // ex_com              <= compressed_ins;
+       // `endif // RV32C_ENABLED
     end
 end
 
@@ -510,11 +601,18 @@ always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         fetch_pc            <= RESETVEC;
     end else if (!ex_stall) begin
-        fetch_pc            <= (ex_flush) ? (fetch_pc + `EX_NEXT_PC) :
-                               (ex_trap)  ? (ex_trap_pc)   :
-                               {next_pc[31:1], 1'b0};
+        
+        //Commented for C
+        //fetch_pc            <= (ex_flush) ? (fetch_pc + `EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   :{next_pc[31:1], 1'b0};
+        //
+	//Modified for C
+	fetch_pc            <= (ex_flush) ? (fetch_pc + 4) : (ex_trap)  ? (ex_trap_pc) : (c_valid)  ? (if_pc    + 2) :{next_pc[31:1], 1'b0};
+	//        
+
     end
 end
+
+// write back stage
 
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
@@ -533,6 +631,11 @@ always @(posedge clk or negedge resetb) begin
                                `ifdef RV32M_ENABLED
                                ex_mul ||
                                `endif
+                               //Modified for C
+                               //`ifdef RV32C_ENABLED
+                               //ex_com ||
+                               //`endif
+                               //
                                (ex_mem2reg && !ex_ld_align_excp);
         wb_dst_sel          <= ex_dst_sel;
         wb_branch           <= branch_taken || ex_trap;
