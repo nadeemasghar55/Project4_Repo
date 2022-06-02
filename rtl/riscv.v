@@ -390,7 +390,7 @@ always @(posedge clk or negedge resetb) begin
                                  //Modified this for C
                                  
                                  (inst[`OPCODE] == OP_SYSTEM)||
-                                 (c_valid);
+                                 (c_valid));
                                  
                                  //
         `ifdef RV32M_ENABLED
@@ -513,7 +513,7 @@ always @* begin
             endcase
         end
         default  : begin
-                   next_pc          = fetch_pc + IF_NEXT_PC;
+                   next_pc          = fetch_pc + `IF_NEXT_PC;
                    branch_taken     = 1'b0;
                    end
     endcase

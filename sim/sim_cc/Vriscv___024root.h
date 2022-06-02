@@ -72,6 +72,7 @@ VL_MODULE(Vriscv___024root) {
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_timer_irq;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_sw_irq;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_interrupt;
+        CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_c_valid;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_mul;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_alu2reg;
         CData/*2:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_alu_op;
@@ -81,13 +82,14 @@ VL_MODULE(Vriscv___024root) {
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_branch;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_nop;
-        CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_nop_more;
     };
     struct {
+        CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_nop_more;
         CData/*1:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_raddr;
         CData/*3:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_wstrb;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_flush;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__ex_ill_csr;
+        CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__c_valid;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__branch_taken;
         CData/*1:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_break;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_system;
@@ -146,10 +148,10 @@ VL_MODULE(Vriscv___024root) {
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_raddress;
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT____Vlvbound_h7ac1a0fd__0;
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT____Vlvbound_h9369a3c8__0;
-        IData/*31:0*/ testbench__DOT__imem__DOT__data;
-        IData/*31:0*/ testbench__DOT__imem__DOT__rdata1;
     };
     struct {
+        IData/*31:0*/ testbench__DOT__imem__DOT__data;
+        IData/*31:0*/ testbench__DOT__imem__DOT__rdata1;
         IData/*31:0*/ testbench__DOT__imem__DOT__rdata2;
         IData/*31:0*/ testbench__DOT__imem__DOT__i;
         IData/*31:0*/ testbench__DOT__imem__DOT__file;

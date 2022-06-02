@@ -852,8 +852,12 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
         VL_WRITEF("Illegal branch instruction at PC 0x%08x\n",
                   32,vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc);
     }
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid 
+        = ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag) 
+           & (~ (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag)));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
-        = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush)
+        = (((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush) 
+            | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid))
             ? 0x13U : vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2 
         = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm_sel)
@@ -1096,166 +1100,151 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
             ? ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_memwr)
                 ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2
                 : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal)
-                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
-                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                           ? 2U : 4U)) : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)
-                                           ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
-                                              + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                                  ? 2U
-                                                  : 4U))
-                                           : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_lui)
-                                               ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm
-                                               : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_auipc)
-                                                   ? 
-                                                  (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
-                                                   + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                                   : 
-                                                  ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr)
-                                                    ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_read
+                    ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc)
+                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)
+                        ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc)
+                        : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_lui)
+                            ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm
+                            : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_auipc)
+                                ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
+                                   + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
+                                : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr)
+                                    ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_read
+                                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul)
+                                        ? ((4U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                            ? ((2U 
+                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                ? (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   ((0U 
+                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                     ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
+                                                     : 
+                                                    VL_MODDIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
                                                     : 
-                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul)
-                                                     ? 
-                                                    ((4U 
-                                                      & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                      ? 
-                                                     ((2U 
-                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                       ? 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       ((0U 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                         ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
-                                                         : 
-                                                        VL_MODDIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                        : 
-                                                       ((0U 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                         ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
-                                                         : 
-                                                        (((0x80000000U 
-                                                           == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
-                                                          & (0xffffffffU 
-                                                             == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                          ? 0U
-                                                          : 
-                                                         VL_MODDIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))
-                                                       : 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       ((0U 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                         ? 0xffffffffU
-                                                         : 
-                                                        VL_DIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                        : 
-                                                       ((0U 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                         ? 0xffffffffU
-                                                         : 
-                                                        (((0x80000000U 
-                                                           == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
-                                                          & (0xffffffffU 
-                                                             == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                          ? 0x80000000U
-                                                          : 
-                                                         VL_DIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))))
+                                                   ((0U 
+                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                     ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
+                                                     : 
+                                                    (((0x80000000U 
+                                                       == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
+                                                      & (0xffffffffU 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                      ? 0U
                                                       : 
-                                                     ((2U 
-                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                       ? 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? (IData)(
-                                                                  (((QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1)) 
-                                                                    * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
-                                                                   >> 0x20U))
-                                                        : (IData)(
-                                                                  (((((QData)((IData)(
+                                                     VL_MODDIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))
+                                                : (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   ((0U 
+                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                     ? 0xffffffffU
+                                                     : 
+                                                    VL_DIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                    : 
+                                                   ((0U 
+                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                     ? 0xffffffffU
+                                                     : 
+                                                    (((0x80000000U 
+                                                       == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
+                                                      & (0xffffffffU 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                      ? 0x80000000U
+                                                      : 
+                                                     VL_DIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))))
+                                            : ((2U 
+                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                ? (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? (IData)(
+                                                              (((QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1)) 
+                                                                * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
+                                                               >> 0x20U))
+                                                    : (IData)(
+                                                              (((((QData)((IData)(
                                                                                 (- (IData)(
                                                                                 (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
                                                                                 >> 0x1fU))))) 
-                                                                      << 0x20U) 
-                                                                     | (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1))) 
-                                                                    * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
-                                                                   >> 0x20U)))
-                                                       : 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? (IData)(
-                                                                  (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul 
-                                                                   >> 0x20U))
-                                                        : (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul))))
+                                                                  << 0x20U) 
+                                                                 | (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1))) 
+                                                                * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
+                                                               >> 0x20U)))
+                                                : (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? (IData)(
+                                                              (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul 
+                                                               >> 0x20U))
+                                                    : (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul))))
+                                        : ((4U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                            ? ((2U 
+                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                ? (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                    & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                    : 
+                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                    | vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                : (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
+                                                     ? 
+                                                    VL_SHIFTRS_III(32,32,5, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, 
+                                                                   (0x1fU 
+                                                                    & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
                                                      : 
-                                                    ((4U 
-                                                      & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                      ? 
-                                                     ((2U 
-                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                       ? 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                        : 
-                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                        | vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                       : 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
-                                                         ? 
-                                                        VL_SHIFTRS_III(32,32,5, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, 
-                                                                       (0x1fU 
-                                                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                         : 
-                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                         >> 
-                                                         (0x1fU 
-                                                          & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
-                                                        : 
-                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                        ^ vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
-                                                      : 
-                                                     ((2U 
-                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                       ? 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       ((1U 
-                                                         & (IData)(
-                                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
-                                                                    >> 0x20U)))
-                                                         ? 1U
-                                                         : 0U)
-                                                        : 
-                                                       ((1U 
-                                                         & (IData)(
-                                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
-                                                                    >> 0x20U)))
-                                                         ? 1U
-                                                         : 0U))
-                                                       : 
-                                                      ((1U 
-                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                        ? 
-                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                        << 
-                                                        (0x1fU 
-                                                         & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                        : 
-                                                       ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
-                                                         ? 
-                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                         - vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                         : 
-                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                         + vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))))))))))
+                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                     >> 
+                                                     (0x1fU 
+                                                      & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
+                                                    : 
+                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                    ^ vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
+                                            : ((2U 
+                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                ? (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   ((1U 
+                                                     & (IData)(
+                                                               (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
+                                                                >> 0x20U)))
+                                                     ? 1U
+                                                     : 0U)
+                                                    : 
+                                                   ((1U 
+                                                     & (IData)(
+                                                               (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
+                                                                >> 0x20U)))
+                                                     ? 1U
+                                                     : 0U))
+                                                : (
+                                                   (1U 
+                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                    ? 
+                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                    << 
+                                                    (0x1fU 
+                                                     & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                    : 
+                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
+                                                     ? 
+                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                     - vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                     : 
+                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                     + vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))))))))))
             : 0U);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__branch_taken 
         = (1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush)));
@@ -1311,51 +1300,43 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                             ? ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
                                                   >> 0x20U)))
-                                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U))
+                                    ? ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
                                     : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm))
                                 : ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
                                                   >> 0x20U)))
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U))))
+                                    : ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)))
                             : ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
                                                   >> 0x20U)))
-                                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U))
+                                    ? ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
                                     : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm))
                                 : ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
                                                   >> 0x20U)))
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U)))))
+                                    : ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))))
                         : ((2U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                             ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc
                             : ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((0ULL != vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs)
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U)))
+                                    : ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))
                                 : ((0ULL == vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs)
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                                           ? 2U : 4U))))))
-                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
-                           ? 2U : 4U)))));
+                                    : ((IData)(4U) 
+                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)))))
+                    : ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ret_pc 
         = (0x7fffffffU & ((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal) 
                             | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)) 
@@ -1537,6 +1518,7 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_timer_irq = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_sw_irq = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_interrupt = VL_RAND_RESET_I(1);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_alu2reg = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_result = VL_RAND_RESET_I(32);
@@ -1568,6 +1550,7 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtval = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__i = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__imm = VL_RAND_RESET_I(32);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs = VL_RAND_RESET_Q(33);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu = VL_RAND_RESET_Q(33);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_result = VL_RAND_RESET_I(32);
