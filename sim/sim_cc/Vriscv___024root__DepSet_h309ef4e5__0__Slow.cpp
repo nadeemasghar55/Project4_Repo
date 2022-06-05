@@ -16,57 +16,12 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
     // Init
     CData/*4:0*/ __Vtableidx1;
     // Body
-    vlSelf->testbench__DOT__imem_rdata = ((IData)(vlSelf->testbench__DOT__imem__DOT__aligned)
-                                           ? vlSelf->testbench__DOT__imem__DOT__rdata1
-                                           : ((vlSelf->testbench__DOT__imem__DOT__rdata2 
-                                               << 0x10U) 
-                                              | (vlSelf->testbench__DOT__imem__DOT__rdata1 
-                                                 >> 0x10U)));
-    vlSelf->testbench__DOT__top__DOT__drdata = ((IData)(vlSelf->testbench__DOT__top__DOT__data_sel)
-                                                 ? vlSelf->testbench__DOT__top__DOT__trdata
-                                                 : vlSelf->testbench__DOT__dmem_rdata);
-    vlSelf->testbench__DOT__top__DOT__clint__DOT__mtime_nxt 
-        = (1ULL + vlSelf->testbench__DOT__top__DOT__clint__DOT__mtime);
-    __Vtableidx1 = vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_dst_sel;
-    vlSelf->testbench__DOT__regname = Vriscv__ConstPool__TABLE_he7da8a49_0
-        [__Vtableidx1];
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_flush 
-        = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop) 
-           | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop_more));
-    vlSelf->testbench__DOT__top__DOT__twready = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_memwr) 
-                                                 & (9U 
-                                                    == 
-                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_waddr 
-                                                     >> 0x1cU)));
-    vlSelf->testbench__DOT__dmem_wready = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_memwr) 
-                                           & (9U != 
-                                              (vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_waddr 
-                                               >> 0x1cU)));
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush 
-        = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch) 
-           | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt));
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_branch = 0U;
-    if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal)))) {
-        if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)))) {
-            if (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_branch) {
-                if ((1U & (~ ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op) 
-                              >> 2U)))) {
-                    if ((2U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))) {
-                        vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_branch = 1U;
-                    }
-                }
-            }
-        }
-    }
-    vlSelf->testbench__DOT__imem_ready = (1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)));
-    if (VL_UNLIKELY((3U == (3U & vlSelf->testbench__DOT__imem_rdata)))) {
-        VL_WRITEF("===================================>>>>>>>>>>>> UnCompressed Instructions OP = 3\n");
+    if ((3U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
         vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
         vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
             = vlSelf->testbench__DOT__imem_rdata;
         vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 0U;
-    } else if (VL_UNLIKELY((0U == (3U & vlSelf->testbench__DOT__imem_rdata)))) {
-        VL_WRITEF("Compressed Instructions OP =00\n");
+    } else if ((0U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
         vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
         if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
             if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
@@ -93,43 +48,48 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                                                     << 3U))))));
                 }
             } else {
-                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
             }
         } else if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
-            vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
+            if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x42403U | ((((0x4000000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0x15U)) | 
+                                     ((0x3800000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0xdU)) | 
+                                      (0x400000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0x10U)))) 
+                                    | (0x38000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 8U))) 
+                                   | (0x380U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 5U))));
+            }
         } else if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
-            vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                = (0x42403U | ((0x4000000U & (vlSelf->testbench__DOT__imem_rdata 
-                                              << 0x15U)) 
-                               | ((0x3800000U & (vlSelf->testbench__DOT__imem_rdata 
-                                                 << 0xdU)) 
-                                  | ((0x400000U & (vlSelf->testbench__DOT__imem_rdata 
-                                                   << 0x10U)) 
-                                     | ((0x38000U & 
-                                         (vlSelf->testbench__DOT__imem_rdata 
-                                          << 8U)) | 
-                                        (0x380U & (vlSelf->testbench__DOT__imem_rdata 
-                                                   << 5U)))))));
+            vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
         } else if ((0U == (0xffU & (vlSelf->testbench__DOT__imem_rdata 
                                     >> 5U)))) {
             vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
         } else {
             vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                = (0x10413U | ((0x3c000000U & (vlSelf->testbench__DOT__imem_rdata 
-                                               << 0x13U)) 
-                               | ((0x3000000U & (vlSelf->testbench__DOT__imem_rdata 
-                                                 << 0xdU)) 
-                                  | ((0x800000U & (vlSelf->testbench__DOT__imem_rdata 
-                                                   << 0x12U)) 
-                                     | ((0x400000U 
+                = (0x10413U | (((0x3c000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                | ((0x3000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0xdU)) 
+                                   | ((0x800000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0x12U)) 
+                                      | (0x400000U 
                                          & (vlSelf->testbench__DOT__imem_rdata 
-                                            << 0x10U)) 
-                                        | (0x380U & 
-                                           (vlSelf->testbench__DOT__imem_rdata 
-                                            << 5U)))))));
+                                            << 0x10U))))) 
+                               | (0x380U & (vlSelf->testbench__DOT__imem_rdata 
+                                            << 5U))));
         }
-    } else if (VL_UNLIKELY((1U == (3U & vlSelf->testbench__DOT__imem_rdata)))) {
-        VL_WRITEF("Compressed Instructions OP =1\n");
+    } else if ((1U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
         vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
         vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
         if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
@@ -210,12 +170,17 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                                                   | ((0xe00000U 
                                                       & (vlSelf->testbench__DOT__imem_rdata 
                                                          << 0x12U)) 
-                                                     | (0x1ff000U 
-                                                        & ((- (IData)(
-                                                                      (1U 
-                                                                       & (vlSelf->testbench__DOT__imem_rdata 
-                                                                          >> 0xcU)))) 
-                                                           << 0xcU)))))))))));
+                                                     | ((0x1ff000U 
+                                                         & ((- (IData)(
+                                                                       (1U 
+                                                                        & (vlSelf->testbench__DOT__imem_rdata 
+                                                                           >> 0xcU)))) 
+                                                            << 0xcU)) 
+                                                        | (0x80U 
+                                                           & ((~ 
+                                                               (vlSelf->testbench__DOT__imem_rdata 
+                                                                >> 0xfU)) 
+                                                              << 7U))))))))))));
             } else if ((0x800U & vlSelf->testbench__DOT__imem_rdata)) {
                 if ((0x400U & vlSelf->testbench__DOT__imem_rdata)) {
                     if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
@@ -276,9 +241,9 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                 }
             } else if ((0x400U & vlSelf->testbench__DOT__imem_rdata)) {
                 vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                    = (0x45413U | ((((0x40000000U & 
+                    = (0x45413U | ((((0x2000000U & 
                                       (vlSelf->testbench__DOT__imem_rdata 
-                                       << 0x14U)) | 
+                                       << 0xdU)) | 
                                      (0x1f00000U & 
                                       (vlSelf->testbench__DOT__imem_rdata 
                                        << 0x12U))) 
@@ -290,9 +255,9 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                 }
             } else {
                 vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                    = (0x45413U | ((((0x40000000U & 
+                    = (0x45413U | ((((0x2000000U & 
                                       (vlSelf->testbench__DOT__imem_rdata 
-                                       << 0x14U)) | 
+                                       << 0xdU)) | 
                                      (0x1f00000U & 
                                       (vlSelf->testbench__DOT__imem_rdata 
                                        << 0x12U))) 
@@ -382,8 +347,10 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                                                                            >> 0xcU)))) 
                                                             << 0xcU)) 
                                                         | (0x80U 
-                                                           & (vlSelf->testbench__DOT__imem_rdata 
-                                                              >> 8U))))))))))))
+                                                           & ((~ 
+                                                               (vlSelf->testbench__DOT__imem_rdata 
+                                                                >> 0xfU)) 
+                                                              << 7U))))))))))))
                     : (0x13U | (((- (IData)((1U & (vlSelf->testbench__DOT__imem_rdata 
                                                    >> 0xcU)))) 
                                  << 0x19U) | ((0x1f00000U 
@@ -395,8 +362,7 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                                                  | (0xf80U 
                                                     & vlSelf->testbench__DOT__imem_rdata))))));
         }
-    } else if (VL_UNLIKELY((2U == (3U & vlSelf->testbench__DOT__imem_rdata)))) {
-        VL_WRITEF("Compressed Instructions OP =2\n");
+    } else if ((2U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
         vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
         vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
         if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
@@ -437,8 +403,8 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
             } else if ((0U != (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
                                         >> 2U)))) {
                 vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                    = (0x33U | ((0x1f00000U & (vlSelf->testbench__DOT__imem_rdata 
-                                               << 0x12U)) 
+                    = (0x13U | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0xdU)) 
                                 | (0xf80U & vlSelf->testbench__DOT__imem_rdata)));
             } else {
                 vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
@@ -472,16 +438,60 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
             vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
         } else {
             vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
-                = (0x1013U | ((0x1f00000U & (vlSelf->testbench__DOT__imem_rdata 
-                                             << 0x12U)) 
-                              | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
-                                              << 8U)) 
-                                 | (0xf80U & vlSelf->testbench__DOT__imem_rdata))));
-            if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
+                = (0x1013U | ((0x2000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0xdU)) 
+                              | ((0x1f00000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x12U)) 
+                                 | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 8U)) 
+                                    | (0xf80U & vlSelf->testbench__DOT__imem_rdata)))));
+            if (VL_UNLIKELY((0x1000U & vlSelf->testbench__DOT__imem_rdata))) {
                 vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                VL_WRITEF("\n Reserved For Custom Extension \n\n");
             }
         }
     }
+    vlSelf->testbench__DOT__top__DOT__drdata = ((IData)(vlSelf->testbench__DOT__top__DOT__data_sel)
+                                                 ? vlSelf->testbench__DOT__top__DOT__trdata
+                                                 : vlSelf->testbench__DOT__dmem_rdata);
+    vlSelf->testbench__DOT__top__DOT__clint__DOT__mtime_nxt 
+        = (1ULL + vlSelf->testbench__DOT__top__DOT__clint__DOT__mtime);
+    __Vtableidx1 = vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_dst_sel;
+    vlSelf->testbench__DOT__regname = Vriscv__ConstPool__TABLE_he7da8a49_0
+        [__Vtableidx1];
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_flush 
+        = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop) 
+           | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop_more));
+    vlSelf->testbench__DOT__top__DOT__twready = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_memwr) 
+                                                 & (9U 
+                                                    == 
+                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_waddr 
+                                                     >> 0x1cU)));
+    vlSelf->testbench__DOT__dmem_wready = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_memwr) 
+                                           & (9U != 
+                                              (vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_waddr 
+                                               >> 0x1cU)));
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush 
+        = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch) 
+           | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt));
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_branch = 0U;
+    if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal)))) {
+        if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)))) {
+            if (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_branch) {
+                if ((1U & (~ ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op) 
+                              >> 2U)))) {
+                    if ((2U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))) {
+                        vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_branch = 1U;
+                    }
+                }
+            }
+        }
+    }
+    vlSelf->testbench__DOT__imem_ready = (1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)));
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid 
+        = (((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag) 
+            & (~ (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag))) 
+           & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_rdata 
         = ((4U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_alu_op))
             ? ((2U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_alu_op))
@@ -852,12 +862,19 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
         VL_WRITEF("Illegal branch instruction at PC 0x%08x\n",
                   32,vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc);
     }
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid 
-        = ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag) 
-           & (~ (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag)));
+    if (vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid) {
+        VL_WRITEF("Decompressed instr 0x%08x\n",32,
+                  vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
+    } else {
+        VL_WRITEF("Normal instr 0x%08x at PC 0x%08x\n",
+                  32,vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed,
+                  32,vlSelf->testbench__DOT__top__DOT__riscv__DOT__if_pc);
+    }
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
-        = (((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush) 
-            | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid))
+        = ((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush) 
+             | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)) 
+            | ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch) 
+               & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid)))
             ? 0x13U : vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2 
         = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm_sel)
@@ -1300,43 +1317,51 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                             ? ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
                                                   >> 0x20U)))
-                                    ? ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
+                                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U))
                                     : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm))
                                 : ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
                                                   >> 0x20U)))
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)))
+                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U))))
                             : ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
                                                   >> 0x20U)))
-                                    ? ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
+                                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U))
                                     : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm))
                                 : ((1U & (IData)((vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
                                                   >> 0x20U)))
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))))
+                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U)))))
                         : ((2U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                             ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc
                             : ((1U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
                                 ? ((0ULL != vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs)
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))
+                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U)))
                                 : ((0ULL == vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs)
                                     ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
                                        + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                    : ((IData)(4U) 
-                                       + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)))))
-                    : ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc))));
+                                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                           ? 2U : 4U))))))
+                    : (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                           ? 2U : 4U)))));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ret_pc 
         = (0x7fffffffU & ((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal) 
                             | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)) 
@@ -1405,13 +1430,13 @@ VL_ATTR_COLD void Vriscv___024root___eval_initial(Vriscv___024root* vlSelf) {
     Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_initial\n"); );
     // Body
+    vlSelf->__Vclklast__TOP__clk = vlSelf->clk;
+    vlSelf->__Vclklast__TOP__resetb = vlSelf->resetb;
     Vriscv___024root___initial__TOP__0(vlSelf);
     vlSelf->__Vm_traceActivity[3U] = 1U;
     vlSelf->__Vm_traceActivity[2U] = 1U;
     vlSelf->__Vm_traceActivity[1U] = 1U;
     vlSelf->__Vm_traceActivity[0U] = 1U;
-    vlSelf->__Vclklast__TOP__clk = vlSelf->clk;
-    vlSelf->__Vclklast__TOP__resetb = vlSelf->resetb;
 }
 
 VL_ATTR_COLD void Vriscv___024root___eval_settle(Vriscv___024root* vlSelf) {
@@ -1549,8 +1574,8 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mcause = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtval = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__i = VL_RAND_RESET_I(32);
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__imm = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid = VL_RAND_RESET_I(1);
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__imm = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs = VL_RAND_RESET_Q(33);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu = VL_RAND_RESET_Q(33);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_result = VL_RAND_RESET_I(32);
@@ -1571,9 +1596,6 @@ VL_ATTR_COLD void Vriscv___024root___ctor_var_reset(Vriscv___024root* vlSelf) {
         vlSelf->testbench__DOT__imem__DOT__ram[__Vi0] = VL_RAND_RESET_I(32);
     }
     vlSelf->testbench__DOT__imem__DOT__data = VL_RAND_RESET_I(32);
-    vlSelf->testbench__DOT__imem__DOT__rdata1 = VL_RAND_RESET_I(32);
-    vlSelf->testbench__DOT__imem__DOT__rdata2 = VL_RAND_RESET_I(32);
-    vlSelf->testbench__DOT__imem__DOT__aligned = VL_RAND_RESET_I(1);
     vlSelf->testbench__DOT__imem__DOT__i = VL_RAND_RESET_I(32);
     vlSelf->testbench__DOT__imem__DOT__file = 0;
     vlSelf->testbench__DOT__imem__DOT__r = VL_RAND_RESET_I(32);

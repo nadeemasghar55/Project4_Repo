@@ -159,9 +159,7 @@ end
 `endif // SYNTHESIS
 
 `ifdef SINGLE_RAM
-initial begin
-	$display("******************************************************* SINGLE RAM ************************************************************************");
-end
+
     wire            mem_ready;
     wire            mem_valid;
     wire            mem_we;
@@ -279,9 +277,7 @@ end
 `endif // SYNTHESIS
 
 `else // SINGLE_RAM
-initial begin
-	$display("******************************************************* IMEM/DMEM Different ************************************************************************");
-end
+
     wire            imem_ready;
     wire            imem_valid;
     wire    [31: 0] imem_addr;
@@ -340,8 +336,7 @@ end
         .dmem_rvalid(dmem_rvalid),
         .dmem_raddr (dmem_raddr),
         .dmem_rresp (dmem_rresp),
-        .dmem_rdata (dmem_rdata),
-        .ins (imem_rdata)
+        .dmem_rdata (dmem_rdata)
     );
 
 `ifdef RV32C_ENABLED
@@ -373,7 +368,8 @@ end
         .wready(1'b0),
         .rresp (imem_rresp),
         .rdata (imem_rdata),
-        .raddr (imem_addr[31:2]-(IRAMBASE/4)),
+        //.raddr (imem_addr[31:2]-(IRAMBASE/4)),				
+        .raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
         .waddr (30'h0),
         .wdata (32'h0),
         .wstrb (4'h0)
@@ -391,7 +387,8 @@ end
         .wready(wready & dmem_wvalid),
         .rresp (dmem_rresp),
         .rdata (dmem_rdata),
-        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),
+        //.raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
+        .raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
         .waddr (dmem_waddr[31:2]-(DRAMBASE/4)),
         .wdata (dmem_wdata),
         .wstrb (dmem_wstrb)
