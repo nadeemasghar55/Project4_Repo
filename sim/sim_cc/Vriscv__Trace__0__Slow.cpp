@@ -852,7 +852,7 @@ VL_ATTR_COLD void Vriscv___024root__trace_init_sub__TOP__0(Vriscv___024root* vlS
     tracep->declBus(c+45,"csr_mtval",-1, FST_VD_IMPLICIT,FST_VT_SV_LOGIC, false,-1, 31,0);
     tracep->declBus(c+46,"i",-1, FST_VD_IMPLICIT,FST_VT_VCD_INTEGER, false,-1, 31,0);
     tracep->declBus(c+54,"IF_NEXT_PC",-1, FST_VD_IMPLICIT,FST_VT_VCD_WIRE, false,-1, 31,0);
-    tracep->declBus(c+54,"EX_NEXT_PC",-1, FST_VD_IMPLICIT,FST_VT_VCD_WIRE, false,-1, 31,0);
+    tracep->declBus(c+354,"EX_NEXT_PC",-1, FST_VD_IMPLICIT,FST_VT_VCD_WIRE, false,-1, 31,0);
     tracep->declBit(c+195,"c_valid",-1, FST_VD_IMPLICIT,FST_VT_VCD_WIRE, false,-1);
     tracep->declBus(c+196,"imm",-1, FST_VD_IMPLICIT,FST_VT_SV_LOGIC, false,-1, 31,0);
     tracep->declQuad(c+197,"result_subs",-1, FST_VD_IMPLICIT,FST_VT_VCD_WIRE, false,-1, 32,0);
@@ -1435,7 +1435,7 @@ VL_ATTR_COLD void Vriscv___024root__trace_full_sub_0(Vriscv___024root* vlSelf, V
                                          + (0x3cU & 
                                             (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mcause 
                                              << 2U)))
-                                      : (0xfffffffcU 
+                                      : (0xfffffffeU 
                                          & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)))),32);
     tracep->fullIData(oldp+224,(0U),32);
     tracep->fullIData(oldp+225,(0x13U),32);
@@ -1565,4 +1565,5 @@ VL_ATTR_COLD void Vriscv___024root__trace_full_sub_0(Vriscv___024root* vlSelf, V
     tracep->fullIData(oldp+351,(0U),30);
     tracep->fullCData(oldp+352,(0U),4);
     tracep->fullSData(oldp+353,(0U),15);
+    tracep->fullIData(oldp+354,(4U),32);
 }

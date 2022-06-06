@@ -178,7 +178,7 @@ module riscv (
 
 
 assign IF_NEXT_PC = compressed_ins ? 2 : 4;
-assign EX_NEXT_PC = compressed_ins ? 2 : 4;
+assign EX_NEXT_PC = compressed_ins ? 4 : 4;
 
 //assign IF_NEXT_PC = 4;
 //assign EX_NEXT_PC = 4;
@@ -222,6 +222,7 @@ always @(posedge clk or negedge resetb) begin
         if_pc               <= RESETVEC;
     end else if (!wb_stall) begin
         if_pc               <= fetch_pc;
+        //IF_NEXT_PC 	     <= compressed_ins ? 2 : 4;
     end
 end
 
@@ -312,6 +313,7 @@ always @(posedge clk or negedge resetb) begin
                                (inst[`FUNC3] == 3'b000);
         ex_system_op        <= inst[`OPCODE] == OP_SYSTEM;
         ex_pc               <= if_pc;
+        //EX_NEXT_PC          <= IF_NEXT_PC;
         ex_c_valid          <= wb_branch ? 1'b0 : c_valid;
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
@@ -405,7 +407,13 @@ assign ex_st_align_excp     = ex_memwr && !ex_flush && (
                                 (ex_alu_op == OP_SW && |ex_memaddr[1:0])
                               );
 assign ex_inst_ill_excp     = !ex_flush && (ex_ill_branch || ex_ill_csr || ex_illegal);
-assign ex_inst_align_excp   = !ex_flush && next_pc[1];
+//assign ex_inst_align_excp   = compressed_ins?!ex_flush && next_pc[0]:!ex_flush && next_pc[1];
+//assign ex_inst_align_excp   = !ex_flush && next_pc[1];
+
+//C-Extension
+assign ex_inst_align_excp   = !ex_flush && next_pc[0];
+//
+
 assign ex_timer_irq         = timer_irq && csr_mstatus[MIE] && csr_mie[MTIE] && !ex_system_op && !ex_flush;
 assign ex_sw_irq            = sw_irq && csr_mstatus[MIE] && csr_mie[MSIE] && !ex_system_op && !ex_flush;
 assign ex_interrupt         = interrupt && csr_mstatus[MIE] && csr_mie[MEIE] && !ex_system_op && !ex_flush;
@@ -423,8 +431,8 @@ assign ex_systemcall        = ex_system && !ex_flush;
 
 always @* begin
     branch_taken  = !ex_flush;
-    //next_pc       = fetch_pc + IF_NEXT_PC;
-    //next_pc       = fetch_pc + IF_NEXT_PC;
+    //next_pc       = fetch_pc + 4;
+    next_pc       = fetch_pc + IF_NEXT_PC;
     ex_ill_branch = 1'b0;
 
     case(1'b1)
@@ -435,31 +443,37 @@ always @* begin
                 OP_BEQ : begin
                             next_pc = (result_subs[32: 0] == 'd0) ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      //ex_pc + ex_imm : fetch_pc + 4;
                             if (result_subs[32: 0] != 'd0) branch_taken = 1'b0;
                          end
                 OP_BNE : begin
                             next_pc = (result_subs[32: 0] != 'd0) ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      //ex_pc + ex_imm : fetch_pc + 4;
                             if (result_subs[32: 0] == 'd0) branch_taken = 1'b0;
                          end
                 OP_BLT : begin
                             next_pc = result_subs[32] ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+					//ex_pc + ex_imm : fetch_pc + 4;
                             if (!result_subs[32]) branch_taken = 1'b0;
                          end
                 OP_BGE : begin
                             next_pc = !result_subs[32] ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      //ex_pc + ex_imm : fetch_pc + 4;
                             if (result_subs[32]) branch_taken = 1'b0;
                          end
                 OP_BLTU: begin
                             next_pc = result_subu[32] ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      //ex_pc + ex_imm : fetch_pc + 4;
                             if (!result_subu[32]) branch_taken = 1'b0;
                          end
                 OP_BGEU: begin
                             next_pc = !result_subu[32] ?
                                       ex_pc + ex_imm : fetch_pc + IF_NEXT_PC;
+                                      //ex_pc + ex_imm : fetch_pc + 4;
                             if (result_subu[32]) branch_taken = 1'b0;
                          end
                 default: begin
@@ -470,6 +484,7 @@ always @* begin
         end
         default  : begin
                    next_pc          = fetch_pc + IF_NEXT_PC;
+                   //next_pc          = fetch_pc + 4;
                    branch_taken     = 1'b0;
                    end
     endcase
@@ -508,10 +523,10 @@ assign result_remu[31: 0]   = (alu_op2 == 32'h00000000) ? alu_op1 :
 always @* begin
     case(1'b1)
         ex_memwr:   ex_result           = alu_op2;
-        //ex_jal:     ex_result           = ex_pc + EX_NEXT_PC;
-        ex_jal:     ex_result           = ex_pc + 4;
-        //ex_jalr:    ex_result           = ex_pc + EX_NEXT_PC;
-        ex_jalr:    ex_result           = ex_pc + 4;
+        ex_jal:     ex_result           = ex_pc + EX_NEXT_PC;
+        //ex_jal:     ex_result           = ex_pc + 4;
+        ex_jalr:    ex_result           = ex_pc + EX_NEXT_PC;
+        //ex_jalr:    ex_result           = ex_pc + 4;
         ex_lui:     ex_result           = ex_imm;
         ex_auipc:   ex_result           = ex_pc + ex_imm;
         ex_csr:     ex_result           = ex_csr_read;
@@ -559,11 +574,21 @@ always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         fetch_pc            <= RESETVEC;
     end else if (!ex_stall) begin
+        
         //fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   : {next_pc[31:1], 1'b0};
-        fetch_pc            <= (c_valid) ? (if_pc + 2) :
+        
+        
+        
+        fetch_pc            <= (c_valid) ? (if_pc + EX_NEXT_PC) :
                                (ex_flush) ? (fetch_pc + EX_NEXT_PC) :
                                (ex_trap)  ? (ex_trap_pc)   :
                                {next_pc[31:1], 1'b0};
+        /*
+        fetch_pc            <= (c_valid) ? (if_pc + 2) :
+                               (ex_flush) ? (fetch_pc + 4) :
+                               (ex_trap)  ? (ex_trap_pc)   :
+                               {next_pc[31:1], 1'b0};
+        */
     end
 end
 
@@ -664,16 +689,29 @@ always @* begin
                                                   dmem_rdata[ 7: 0]};
                         2'b01: wb_rdata[31: 0] = {{24{dmem_rdata[15]}},
                                                   dmem_rdata[15: 8]};
+                  /*
                         2'b10: wb_rdata[31: 0] = {{24{dmem_rdata[23]}},
                                                   dmem_rdata[23:16]};
                         2'b11: wb_rdata[31: 0] = {{24{dmem_rdata[31]}},
                                                   dmem_rdata[31:24]};
+                  */
+                  //Modification for C                                
+                        2'b10: wb_rdata[31: 0] = {{24{dmem_rdata[7]}},
+                                                  dmem_rdata[ 7: 0]};
+                        2'b11: wb_rdata[31: 0] = {{24{dmem_rdata[15]}},
+                                                  dmem_rdata[15: 8]};
+                 /////////
                     endcase
                  end
         OP_LH  : begin
+        	/*
                      wb_rdata = (wb_raddr[1]) ?
                                {{16{dmem_rdata[31]}}, dmem_rdata[31:16]} :
                                {{16{dmem_rdata[15]}}, dmem_rdata[15: 0]};
+               */  
+               //Modification for C                
+                     wb_rdata = {{16{dmem_rdata[15]}}, dmem_rdata[15: 0]};
+               /////
                  end
         OP_LW  : begin
                     wb_rdata = dmem_rdata;
@@ -682,14 +720,29 @@ always @* begin
                     case(wb_raddr[1:0])
                         2'b00: wb_rdata[31: 0] = {24'h0, dmem_rdata[7:0]};
                         2'b01: wb_rdata[31: 0] = {24'h0, dmem_rdata[15:8]};
+                        
+                   /*
                         2'b10: wb_rdata[31: 0] = {24'h0, dmem_rdata[23:16]};
                         2'b11: wb_rdata[31: 0] = {24'h0, dmem_rdata[31:24]};
+                   */
+                        
+                   //Modification for C 
+                        2'b10: wb_rdata[31: 0] = {24'h0, dmem_rdata[7:0]};
+                        2'b11: wb_rdata[31: 0] = {24'h0, dmem_rdata[15:8]};
+                  /////////////
+                        
                     endcase
                  end
         OP_LHU : begin
+        
+        	    /*
                     wb_rdata = (wb_raddr[1]) ?
                                {16'h0, dmem_rdata[31:16]} :
                                {16'h0, dmem_rdata[15: 0]};
+                    */           
+                    //Modification for C
+                                wb_rdata = {16'h0, dmem_rdata[15: 0]};
+                    //////
                  end
         default: begin
                     wb_rdata = 32'h0;
@@ -709,8 +762,10 @@ assign ex_trap_pc   = (ex_systemcall && ex_imm[1:0] == 2'b10) ? // mret
                       csr_mepc :
                       csr_mtvec[0] ?
                       {csr_mtvec[31:2], 2'b00} + {26'h0, ex_mcause[3:0], 2'b00} :
-                      {csr_mtvec[31:2], 2'b00};
-
+                      //{csr_mtvec[31:2], 2'b00};
+                      //C-Extension
+                      {csr_mtvec[31:1], 1'b00};								
+			//
 assign ex_csr_data  = ex_alu_op[2] ? {27'h0, ex_src1_sel[4:0]} : reg_rdata1;
 
 always @* begin

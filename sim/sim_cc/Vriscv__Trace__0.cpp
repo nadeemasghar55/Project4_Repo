@@ -338,7 +338,7 @@ void Vriscv___024root__trace_chg_sub_0(Vriscv___024root* vlSelf, VerilatedFst* t
                                         + (0x3cU & 
                                            (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mcause 
                                             << 2U)))
-                                     : (0xfffffffcU 
+                                     : (0xfffffffeU 
                                         & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)))),32);
 }
 

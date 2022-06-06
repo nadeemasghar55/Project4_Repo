@@ -72,7 +72,7 @@ Symbol table '.symtab' contains 49 entries:
     11: 00000080     0 NOTYPE  LOCAL  DEFAULT    1 _trap_handler
     12: 000001f0     0 NOTYPE  LOCAL  DEFAULT    1 _trap_ebreak
     13: 00000138     0 NOTYPE  LOCAL  DEFAULT    1 _trap_ecall
-    14: 00000000     0 FILE    LOCAL  DEFAULT  ABS ccmJjSs8.o
+    14: 00000000     0 FILE    LOCAL  DEFAULT  ABS ccI2nFMB.o
     15: 0000003c     0 NOTYPE  LOCAL  DEFAULT    1 $x
     16: 00000000     0 FILE    LOCAL  DEFAULT  ABS syscall.c
     17: 000002a8     0 NOTYPE  LOCAL  DEFAULT    1 $x
