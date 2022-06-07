@@ -94,7 +94,6 @@ VL_MODULE(Vriscv___024root) {
         CData/*1:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_break;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_system;
         CData/*0:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_ld_align_excp;
-        CData/*0:0*/ testbench__DOT__imem__DOT__aligned;
         CData/*1:0*/ __Vdly__testbench__DOT__fillcount;
         CData/*0:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__ex_mem2reg;
         CData/*0:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__wb_memwr;
@@ -148,11 +147,9 @@ VL_MODULE(Vriscv___024root) {
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT__wb_raddress;
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT____Vlvbound_h7ac1a0fd__0;
         IData/*31:0*/ testbench__DOT__top__DOT__riscv__DOT____Vlvbound_h9369a3c8__0;
+        IData/*31:0*/ testbench__DOT__imem__DOT__data;
     };
     struct {
-        IData/*31:0*/ testbench__DOT__imem__DOT__data;
-        IData/*31:0*/ testbench__DOT__imem__DOT__rdata1;
-        IData/*31:0*/ testbench__DOT__imem__DOT__rdata2;
         IData/*31:0*/ testbench__DOT__imem__DOT__i;
         IData/*31:0*/ testbench__DOT__imem__DOT__file;
         IData/*31:0*/ testbench__DOT__imem__DOT__r;
