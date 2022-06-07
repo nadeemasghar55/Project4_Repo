@@ -38,6 +38,7 @@ begin
                 if(ins[12:5]==8'b0000_0000)   //Illegal Instruction
                 begin
                     illegal_ins = 1'b1;
+                    compressed_ins = 1'b0;
                 end
                 else
                 begin

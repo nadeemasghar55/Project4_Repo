@@ -18,6 +18,7 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
     IData/*31:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtval;
     IData/*31:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mepc;
     IData/*31:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mip;
+    IData/*31:0*/ __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec;
     // Body
     vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__ex_mem2reg 
         = vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mem2reg;
@@ -31,8 +32,8 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
     vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_cycle 
         = vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_cycle;
     vlSelf->__Vdly__testbench__DOT__fillcount = vlSelf->testbench__DOT__fillcount;
-    vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-        = vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc;
+    __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec 
+        = vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec;
     __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mip 
         = vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mip;
     __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mcause 
@@ -43,6 +44,8 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
         = vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mstatus;
     __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mepc 
         = vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mepc;
+    vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+        = vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc;
     vlSelf->__Vdlyvset__testbench__DOT__top__DOT__riscv__DOT__regs__v0 = 0U;
     vlSelf->__Vdlyvset__testbench__DOT__top__DOT__riscv__DOT__regs__v1 = 0U;
     if ((1U & (~ (IData)(vlSelf->resetb)))) {
@@ -50,10 +53,10 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
     }
     vlSelf->testbench__DOT__dmem_rresp = ((IData)(vlSelf->resetb) 
                                           & (IData)(vlSelf->testbench__DOT__dmem_rready));
-    vlSelf->testbench__DOT__imem_rresp = ((IData)(vlSelf->resetb) 
-                                          & (IData)(vlSelf->testbench__DOT__imem_ready));
     vlSelf->testbench__DOT__top__DOT__trresp = ((IData)(vlSelf->resetb) 
                                                 & (IData)(vlSelf->testbench__DOT__top__DOT__trready));
+    vlSelf->testbench__DOT__imem_rresp = ((IData)(vlSelf->resetb) 
+                                          & (IData)(vlSelf->testbench__DOT__imem_ready));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush 
         = (1U & ((~ (IData)(vlSelf->resetb)) | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)));
     if (vlSelf->resetb) {
@@ -186,9 +189,13 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
                         = (1ULL + vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_instret);
                 }
             }
-            vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid 
-                = ((~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch)) 
-                   & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid));
+        }
+        if (vlSelf->testbench__DOT__imem_ready) {
+            vlSelf->testbench__DOT__imem__DOT__aligned 
+                = (1U & (~ (vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                            >> 1U)));
+        }
+        if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_src2_sel 
                 = (0x1fU & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
                             >> 0x14U));
@@ -209,23 +216,6 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt 
                 = vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch;
-            vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
-                = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid)
-                    ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__if_pc)
-                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush)
-                        ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
-                        : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_trap)
-                            ? (((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_systemcall) 
-                                & (2U == (3U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)))
-                                ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mepc
-                                : ((1U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)
-                                    ? ((0xfffffffcU 
-                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec) 
-                                       + (0x3cU & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mcause 
-                                                   << 2U)))
-                                    : (0xfffffffeU 
-                                       & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)))
-                            : (0xfffffffeU & vlSelf->testbench__DOT__top__DOT__riscv__DOT__next_pc))));
         }
         vlSelf->testbench__DOT__top__DOT__timer_irq 
             = ((1ULL + vlSelf->testbench__DOT__top__DOT__clint__DOT__mtime) 
@@ -352,7 +342,7 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
                                                         if (
                                                             (1U 
                                                              & vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)) {
-                                                            vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec 
+                                                            __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec 
                                                                 = 
                                                                 ((2U 
                                                                   & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
@@ -696,6 +686,24 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
             }
         }
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
+            vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc 
+                = (((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid) 
+                    | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid))
+                    ? ((IData)(2U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__if_pc)
+                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush)
+                        ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__fetch_pc)
+                        : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_trap)
+                            ? (((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_systemcall) 
+                                & (2U == (3U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)))
+                                ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mepc
+                                : ((1U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)
+                                    ? ((0xfffffffcU 
+                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec) 
+                                       + (0x3cU & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mcause 
+                                                   << 2U)))
+                                    : (0xfffffffeU 
+                                       & vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec)))
+                            : (0xfffffffeU & vlSelf->testbench__DOT__top__DOT__riscv__DOT__next_pc))));
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_raddr 
                 = (3U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_memaddr);
         }
@@ -735,6 +743,8 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
             = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mstatus;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mepc 
             = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mepc;
+        vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec 
+            = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec;
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_wr 
                 = (((0x73U == (0x7fU & vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst)) 
@@ -754,6 +764,9 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
                                                                  (7U 
                                                                   & (vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
                                                                      >> 0xcU)))))));
+            vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid 
+                = ((~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch)) 
+                   & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid));
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop 
                 = vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch;
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch 
@@ -768,22 +781,22 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
         vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_cycle = 0ULL;
         vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_instret = 0ULL;
         vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__pipefill = 0U;
-        vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid = 0U;
+        vlSelf->testbench__DOT__imem__DOT__aligned = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_src2_sel = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm_sel = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_src1_sel = 0U;
         vlSelf->__Vdly__testbench__DOT__fillcount = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch_nxt = 0U;
-        vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc = 0U;
         vlSelf->testbench__DOT__top__DOT__timer_irq = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_misa = 0U;
-        vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec = 0U;
+        __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec = 0U;
         __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mip = 0U;
         __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mcause = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mie = 0U;
         __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtval = 0U;
         __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mstatus = 0U;
         __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mepc = 0U;
+        vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__fetch_pc = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_raddr = 0U;
         vlSelf->testbench__DOT__top__DOT__data_sel = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop_more = 0U;
@@ -799,7 +812,10 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
             = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mstatus;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mepc 
             = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mepc;
+        vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_mtvec 
+            = __Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_mtvec;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_wr = 0U;
+        vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_nop = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch = 0U;
     }
@@ -870,13 +886,15 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__2(Vriscv___024root* vlSelf) 
         = vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_instret;
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__csr_cycle 
         = vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__csr_cycle;
+    vlSelf->testbench__DOT__imem_rdata = ((IData)(vlSelf->testbench__DOT__imem__DOT__aligned)
+                                           ? vlSelf->testbench__DOT__imem__DOT__rdata1
+                                           : ((vlSelf->testbench__DOT__imem__DOT__rdata2 
+                                               << 0x10U) 
+                                              | (vlSelf->testbench__DOT__imem__DOT__rdata1 
+                                                 >> 0x10U)));
     vlSelf->testbench__DOT__top__DOT__drdata = ((IData)(vlSelf->testbench__DOT__top__DOT__data_sel)
                                                  ? vlSelf->testbench__DOT__top__DOT__trdata
                                                  : vlSelf->testbench__DOT__dmem_rdata);
-    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid 
-        = (((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag) 
-            & (~ (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag))) 
-           & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)));
     if (vlSelf->resetb) {
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_system 
@@ -973,6 +991,442 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__2(Vriscv___024root* vlSelf) 
         vlSelf->testbench__DOT__top__DOT__sw_irq = 0U;
         vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_wstrb = 0U;
     }
+    if ((3U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
+        vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
+        vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+            = vlSelf->testbench__DOT__imem_rdata;
+        vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 0U;
+    } else if ((0U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
+        vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
+        if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+                if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                } else {
+                    vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                        = (0x846023U | ((((0x4000000U 
+                                           & (vlSelf->testbench__DOT__imem_rdata 
+                                              << 0x15U)) 
+                                          | (0x2000000U 
+                                             & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0xdU))) 
+                                         | (0x700000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x12U))) 
+                                        | ((0x38000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 8U)) 
+                                           | ((0xc00U 
+                                               & vlSelf->testbench__DOT__imem_rdata) 
+                                              | (0x200U 
+                                                 & (vlSelf->testbench__DOT__imem_rdata 
+                                                    << 3U))))));
+                }
+            } else {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            }
+        } else if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x42403U | ((((0x4000000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0x15U)) | 
+                                     ((0x3800000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0xdU)) | 
+                                      (0x400000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0x10U)))) 
+                                    | (0x38000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 8U))) 
+                                   | (0x380U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 5U))));
+            }
+        } else if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+            vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+        } else if ((0U == (0xffU & (vlSelf->testbench__DOT__imem_rdata 
+                                    >> 5U)))) {
+            vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 0U;
+        } else {
+            vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                = (0x10413U | (((0x3c000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                | ((0x3000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0xdU)) 
+                                   | ((0x800000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0x12U)) 
+                                      | (0x400000U 
+                                         & (vlSelf->testbench__DOT__imem_rdata 
+                                            << 0x10U))))) 
+                               | (0x380U & (vlSelf->testbench__DOT__imem_rdata 
+                                            << 5U))));
+        }
+    } else if ((1U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
+        vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
+        vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
+        if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = ((0x2000U & vlSelf->testbench__DOT__imem_rdata)
+                        ? (0x40063U | ((((- (IData)(
+                                                    (1U 
+                                                     & (vlSelf->testbench__DOT__imem_rdata 
+                                                        >> 0xcU)))) 
+                                         << 0x1cU) 
+                                        | ((0xc000000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x15U)) 
+                                           | (0x2000000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 0x17U)))) 
+                                       | ((0x38000U 
+                                           & (vlSelf->testbench__DOT__imem_rdata 
+                                              << 8U)) 
+                                          | ((0x1000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 >> 1U)) 
+                                             | ((0xc00U 
+                                                 & vlSelf->testbench__DOT__imem_rdata) 
+                                                | ((0x300U 
+                                                    & (vlSelf->testbench__DOT__imem_rdata 
+                                                       << 5U)) 
+                                                   | (0x80U 
+                                                      & (vlSelf->testbench__DOT__imem_rdata 
+                                                         >> 5U))))))))
+                        : (0x40063U | ((((- (IData)(
+                                                    (1U 
+                                                     & (vlSelf->testbench__DOT__imem_rdata 
+                                                        >> 0xcU)))) 
+                                         << 0x1cU) 
+                                        | ((0xc000000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x15U)) 
+                                           | (0x2000000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 0x17U)))) 
+                                       | ((0x38000U 
+                                           & (vlSelf->testbench__DOT__imem_rdata 
+                                              << 8U)) 
+                                          | ((0x1000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 >> 1U)) 
+                                             | ((0xc00U 
+                                                 & vlSelf->testbench__DOT__imem_rdata) 
+                                                | ((0x300U 
+                                                    & (vlSelf->testbench__DOT__imem_rdata 
+                                                       << 5U)) 
+                                                   | (0x80U 
+                                                      & (vlSelf->testbench__DOT__imem_rdata 
+                                                         >> 5U)))))))));
+            } else if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x6fU | ((0x80000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                | ((0x40000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 0x16U)) 
+                                   | ((0x30000000U 
+                                       & (vlSelf->testbench__DOT__imem_rdata 
+                                          << 0x13U)) 
+                                      | ((0x8000000U 
+                                          & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0x15U)) 
+                                         | ((0x4000000U 
+                                             & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                            | ((0x2000000U 
+                                                & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 0x17U)) 
+                                               | ((0x1000000U 
+                                                   & (vlSelf->testbench__DOT__imem_rdata 
+                                                      << 0xdU)) 
+                                                  | ((0xe00000U 
+                                                      & (vlSelf->testbench__DOT__imem_rdata 
+                                                         << 0x12U)) 
+                                                     | ((0x1ff000U 
+                                                         & ((- (IData)(
+                                                                       (1U 
+                                                                        & (vlSelf->testbench__DOT__imem_rdata 
+                                                                           >> 0xcU)))) 
+                                                            << 0xcU)) 
+                                                        | (0x80U 
+                                                           & ((~ 
+                                                               (vlSelf->testbench__DOT__imem_rdata 
+                                                                >> 0xfU)) 
+                                                              << 7U))))))))))));
+            } else if ((0x800U & vlSelf->testbench__DOT__imem_rdata)) {
+                if ((0x400U & vlSelf->testbench__DOT__imem_rdata)) {
+                    if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
+                        vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                    } else {
+                        vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                            = ((0x40U & vlSelf->testbench__DOT__imem_rdata)
+                                ? ((0x20U & vlSelf->testbench__DOT__imem_rdata)
+                                    ? (0x847433U | 
+                                       (((0x700000U 
+                                          & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0x12U)) 
+                                         | (0x38000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 8U))) 
+                                        | (0x380U & vlSelf->testbench__DOT__imem_rdata)))
+                                    : (0x846433U | 
+                                       (((0x700000U 
+                                          & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0x12U)) 
+                                         | (0x38000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 8U))) 
+                                        | (0x380U & vlSelf->testbench__DOT__imem_rdata))))
+                                : ((0x20U & vlSelf->testbench__DOT__imem_rdata)
+                                    ? (0x844433U | 
+                                       (((0x700000U 
+                                          & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0x12U)) 
+                                         | (0x38000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 8U))) 
+                                        | (0x380U & vlSelf->testbench__DOT__imem_rdata)))
+                                    : (0x40840433U 
+                                       | (((0x700000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x12U)) 
+                                           | (0x38000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 8U))) 
+                                          | (0x380U 
+                                             & vlSelf->testbench__DOT__imem_rdata)))));
+                    }
+                } else {
+                    vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                        = (0x47413U | (((((- (IData)(
+                                                     (1U 
+                                                      & (vlSelf->testbench__DOT__imem_rdata 
+                                                         >> 0xcU)))) 
+                                          << 0x19U) 
+                                         | (0x1f00000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x12U))) 
+                                        | (0x38000U 
+                                           & (vlSelf->testbench__DOT__imem_rdata 
+                                              << 8U))) 
+                                       | (0x380U & vlSelf->testbench__DOT__imem_rdata)));
+                }
+            } else if ((0x400U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x45413U | ((((0x2000000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0xdU)) | 
+                                     (0x1f00000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0x12U))) 
+                                    | (0x38000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 8U))) 
+                                   | (0x380U & vlSelf->testbench__DOT__imem_rdata)));
+                if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                }
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x45413U | ((((0x2000000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0xdU)) | 
+                                     (0x1f00000U & 
+                                      (vlSelf->testbench__DOT__imem_rdata 
+                                       << 0x12U))) 
+                                    | (0x38000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 8U))) 
+                                   | (0x380U & vlSelf->testbench__DOT__imem_rdata)));
+                if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                }
+            }
+        } else if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x37U | (((- (IData)((1U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   >> 0xcU)))) 
+                                 << 0x11U) | ((0x1f000U 
+                                               & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0xaU)) 
+                                              | (0xf80U 
+                                                 & vlSelf->testbench__DOT__imem_rdata))));
+                if ((0U == ((0x20U & (vlSelf->testbench__DOT__imem_rdata 
+                                      >> 7U)) | (0x1fU 
+                                                 & (vlSelf->testbench__DOT__imem_rdata 
+                                                    >> 2U))))) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                }
+                if ((2U == (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                     >> 7U)))) {
+                    vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                        = (0x10113U | (((- (IData)(
+                                                   (1U 
+                                                    & (vlSelf->testbench__DOT__imem_rdata 
+                                                       >> 0xcU)))) 
+                                        << 0x1dU) | 
+                                       ((0x18000000U 
+                                         & (vlSelf->testbench__DOT__imem_rdata 
+                                            << 0x18U)) 
+                                        | ((0x4000000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 0x15U)) 
+                                           | ((0x2000000U 
+                                               & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0x17U)) 
+                                              | (0x1000000U 
+                                                 & (vlSelf->testbench__DOT__imem_rdata 
+                                                    << 0x12U)))))));
+                }
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x13U | (((- (IData)((1U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   >> 0xcU)))) 
+                                 << 0x19U) | ((0x1f00000U 
+                                               & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0x12U)) 
+                                              | (0xf80U 
+                                                 & vlSelf->testbench__DOT__imem_rdata))));
+            }
+        } else {
+            vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                = ((0x2000U & vlSelf->testbench__DOT__imem_rdata)
+                    ? (0x6fU | ((0x80000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                | ((0x40000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 0x16U)) 
+                                   | ((0x30000000U 
+                                       & (vlSelf->testbench__DOT__imem_rdata 
+                                          << 0x13U)) 
+                                      | ((0x8000000U 
+                                          & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0x15U)) 
+                                         | ((0x4000000U 
+                                             & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x13U)) 
+                                            | ((0x2000000U 
+                                                & (vlSelf->testbench__DOT__imem_rdata 
+                                                   << 0x17U)) 
+                                               | ((0x1000000U 
+                                                   & (vlSelf->testbench__DOT__imem_rdata 
+                                                      << 0xdU)) 
+                                                  | ((0xe00000U 
+                                                      & (vlSelf->testbench__DOT__imem_rdata 
+                                                         << 0x12U)) 
+                                                     | ((0x1ff000U 
+                                                         & ((- (IData)(
+                                                                       (1U 
+                                                                        & (vlSelf->testbench__DOT__imem_rdata 
+                                                                           >> 0xcU)))) 
+                                                            << 0xcU)) 
+                                                        | (0x80U 
+                                                           & ((~ 
+                                                               (vlSelf->testbench__DOT__imem_rdata 
+                                                                >> 0xfU)) 
+                                                              << 7U))))))))))))
+                    : (0x13U | (((- (IData)((1U & (vlSelf->testbench__DOT__imem_rdata 
+                                                   >> 0xcU)))) 
+                                 << 0x19U) | ((0x1f00000U 
+                                               & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0x12U)) 
+                                              | ((0xf8000U 
+                                                  & (vlSelf->testbench__DOT__imem_rdata 
+                                                     << 8U)) 
+                                                 | (0xf80U 
+                                                    & vlSelf->testbench__DOT__imem_rdata))))));
+        }
+    } else if ((2U == (3U & vlSelf->testbench__DOT__imem_rdata))) {
+        vlSelf->testbench__DOT__top__DOT__compressed_ins_flag = 1U;
+        vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 0U;
+        if ((0x8000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+                if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                } else {
+                    vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                        = (0x12023U | ((0xc000000U 
+                                        & (vlSelf->testbench__DOT__imem_rdata 
+                                           << 0x13U)) 
+                                       | ((0x2000000U 
+                                           & (vlSelf->testbench__DOT__imem_rdata 
+                                              << 0xdU)) 
+                                          | ((0x1f00000U 
+                                              & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 0x12U)) 
+                                             | (0xe00U 
+                                                & vlSelf->testbench__DOT__imem_rdata)))));
+                }
+            } else if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            } else if ((0x1000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = ((0U != (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                        >> 2U))) ? 
+                       (0x33U | ((0x1f00000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x12U)) 
+                                 | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 8U)) 
+                                    | (0xf80U & vlSelf->testbench__DOT__imem_rdata))))
+                        : ((0U == (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                            >> 7U)))
+                            ? 0x100073U : (0xe7U | 
+                                           (0xf8000U 
+                                            & (vlSelf->testbench__DOT__imem_rdata 
+                                               << 8U)))));
+            } else if ((0U != (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                        >> 2U)))) {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x13U | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0xdU)) 
+                                | (0xf80U & vlSelf->testbench__DOT__imem_rdata)));
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x67U | (0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                            << 8U)));
+                if ((0U == (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                     >> 7U)))) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                }
+            }
+        } else if ((0x4000U & vlSelf->testbench__DOT__imem_rdata)) {
+            if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+            } else {
+                vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                    = (0x12003U | ((0xc000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                  << 0x18U)) 
+                                   | ((0x2000000U & 
+                                       (vlSelf->testbench__DOT__imem_rdata 
+                                        << 0xdU)) | 
+                                      ((0x1c00000U 
+                                        & (vlSelf->testbench__DOT__imem_rdata 
+                                           << 0x12U)) 
+                                       | (0xf80U & vlSelf->testbench__DOT__imem_rdata)))));
+                if ((0U == (0x1fU & (vlSelf->testbench__DOT__imem_rdata 
+                                     >> 7U)))) {
+                    vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                }
+            }
+        } else if ((0x2000U & vlSelf->testbench__DOT__imem_rdata)) {
+            vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+        } else {
+            vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed 
+                = (0x1013U | ((0x2000000U & (vlSelf->testbench__DOT__imem_rdata 
+                                             << 0xdU)) 
+                              | ((0x1f00000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                << 0x12U)) 
+                                 | ((0xf8000U & (vlSelf->testbench__DOT__imem_rdata 
+                                                 << 8U)) 
+                                    | (0xf80U & vlSelf->testbench__DOT__imem_rdata)))));
+            if (VL_UNLIKELY((0x1000U & vlSelf->testbench__DOT__imem_rdata))) {
+                vlSelf->testbench__DOT__top__DOT__illegal_ins_flag = 1U;
+                VL_WRITEF("\n Reserved For Custom Extension \n\n");
+            }
+        }
+    }
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_systemcall 
         = ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_system) 
            & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush)));
@@ -980,6 +1434,10 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__2(Vriscv___024root* vlSelf) 
         = vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__ex_mem2reg;
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__pipefill 
         = vlSelf->__Vdly__testbench__DOT__top__DOT__riscv__DOT__pipefill;
+    vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid 
+        = (((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag) 
+            & (~ (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag))) 
+           & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)));
     if (vlSelf->resetb) {
         if ((1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__stall_r)))) {
             vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm 
@@ -1508,14 +1966,6 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__2(Vriscv___024root* vlSelf) 
             | ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch) 
                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid)))
             ? 0x13U : vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
-    if (vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid) {
-        VL_WRITEF("Decompressed instr 0x%08x\n",32,
-                  vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
-    } else {
-        VL_WRITEF("Normal instr 0x%08x at PC 0x%08x\n",
-                  32,vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed,
-                  32,vlSelf->testbench__DOT__top__DOT__riscv__DOT__if_pc);
-    }
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__imm 
         = ((0x40U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst)
             ? ((0x20U & vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst)
@@ -1675,151 +2125,166 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__2(Vriscv___024root* vlSelf) 
             ? ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_memwr)
                 ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2
                 : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jal)
-                    ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc)
-                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)
-                        ? ((IData)(4U) + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc)
-                        : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_lui)
-                            ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm
-                            : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_auipc)
-                                ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
-                                   + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
-                                : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr)
-                                    ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_read
-                                    : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul)
-                                        ? ((4U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                            ? ((2U 
-                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                ? (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   ((0U 
-                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                     ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
-                                                     : 
-                                                    VL_MODDIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                    ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
+                       + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                           ? 2U : 4U)) : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_jalr)
+                                           ? (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
+                                              + ((IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)
+                                                  ? 2U
+                                                  : 4U))
+                                           : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_lui)
+                                               ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm
+                                               : ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_auipc)
+                                                   ? 
+                                                  (vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_pc 
+                                                   + vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_imm)
+                                                   : 
+                                                  ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr)
+                                                    ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_csr_read
                                                     : 
-                                                   ((0U 
-                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                     ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
-                                                     : 
-                                                    (((0x80000000U 
-                                                       == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
-                                                      & (0xffffffffU 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                      ? 0U
+                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_mul)
+                                                     ? 
+                                                    ((4U 
+                                                      & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                      ? 
+                                                     ((2U 
+                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                       ? 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       ((0U 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                         ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
+                                                         : 
+                                                        VL_MODDIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                        : 
+                                                       ((0U 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                         ? vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1
+                                                         : 
+                                                        (((0x80000000U 
+                                                           == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
+                                                          & (0xffffffffU 
+                                                             == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                          ? 0U
+                                                          : 
+                                                         VL_MODDIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))
+                                                       : 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       ((0U 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                         ? 0xffffffffU
+                                                         : 
+                                                        VL_DIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                        : 
+                                                       ((0U 
+                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                         ? 0xffffffffU
+                                                         : 
+                                                        (((0x80000000U 
+                                                           == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
+                                                          & (0xffffffffU 
+                                                             == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                          ? 0x80000000U
+                                                          : 
+                                                         VL_DIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))))
                                                       : 
-                                                     VL_MODDIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))
-                                                : (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   ((0U 
-                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                     ? 0xffffffffU
-                                                     : 
-                                                    VL_DIV_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                    : 
-                                                   ((0U 
-                                                     == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                     ? 0xffffffffU
-                                                     : 
-                                                    (((0x80000000U 
-                                                       == vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1) 
-                                                      & (0xffffffffU 
-                                                         == vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                      ? 0x80000000U
-                                                      : 
-                                                     VL_DIVS_III(32, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))))
-                                            : ((2U 
-                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                ? (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? (IData)(
-                                                              (((QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1)) 
-                                                                * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
-                                                               >> 0x20U))
-                                                    : (IData)(
-                                                              (((((QData)((IData)(
+                                                     ((2U 
+                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                       ? 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? (IData)(
+                                                                  (((QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1)) 
+                                                                    * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
+                                                                   >> 0x20U))
+                                                        : (IData)(
+                                                                  (((((QData)((IData)(
                                                                                 (- (IData)(
                                                                                 (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
                                                                                 >> 0x1fU))))) 
-                                                                  << 0x20U) 
-                                                                 | (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1))) 
-                                                                * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
-                                                               >> 0x20U)))
-                                                : (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? (IData)(
-                                                              (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul 
-                                                               >> 0x20U))
-                                                    : (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul))))
-                                        : ((4U & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                            ? ((2U 
-                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                ? (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                    & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                    : 
-                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                    | vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                : (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
-                                                     ? 
-                                                    VL_SHIFTRS_III(32,32,5, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, 
-                                                                   (0x1fU 
-                                                                    & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                                      << 0x20U) 
+                                                                     | (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1))) 
+                                                                    * (QData)((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))) 
+                                                                   >> 0x20U)))
+                                                       : 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? (IData)(
+                                                                  (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul 
+                                                                   >> 0x20U))
+                                                        : (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_mul))))
                                                      : 
-                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                     >> 
-                                                     (0x1fU 
-                                                      & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
-                                                    : 
-                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                    ^ vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
-                                            : ((2U 
-                                                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                ? (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   ((1U 
-                                                     & (IData)(
-                                                               (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
-                                                                >> 0x20U)))
-                                                     ? 1U
-                                                     : 0U)
-                                                    : 
-                                                   ((1U 
-                                                     & (IData)(
-                                                               (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
-                                                                >> 0x20U)))
-                                                     ? 1U
-                                                     : 0U))
-                                                : (
-                                                   (1U 
-                                                    & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
-                                                    ? 
-                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                    << 
-                                                    (0x1fU 
-                                                     & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
-                                                    : 
-                                                   ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
-                                                     ? 
-                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                     - vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
-                                                     : 
-                                                    (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
-                                                     + vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))))))))))
+                                                    ((4U 
+                                                      & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                      ? 
+                                                     ((2U 
+                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                       ? 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                        : 
+                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                        | vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                       : 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
+                                                         ? 
+                                                        VL_SHIFTRS_III(32,32,5, vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1, 
+                                                                       (0x1fU 
+                                                                        & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                         : 
+                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                         >> 
+                                                         (0x1fU 
+                                                          & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
+                                                        : 
+                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                        ^ vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)))
+                                                      : 
+                                                     ((2U 
+                                                       & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                       ? 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       ((1U 
+                                                         & (IData)(
+                                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subu 
+                                                                    >> 0x20U)))
+                                                         ? 1U
+                                                         : 0U)
+                                                        : 
+                                                       ((1U 
+                                                         & (IData)(
+                                                                   (vlSelf->testbench__DOT__top__DOT__riscv__DOT__result_subs 
+                                                                    >> 0x20U)))
+                                                         ? 1U
+                                                         : 0U))
+                                                       : 
+                                                      ((1U 
+                                                        & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_alu_op))
+                                                        ? 
+                                                       (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                        << 
+                                                        (0x1fU 
+                                                         & vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))
+                                                        : 
+                                                       ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_subtype)
+                                                         ? 
+                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                         - vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2)
+                                                         : 
+                                                        (vlSelf->testbench__DOT__top__DOT__riscv__DOT__reg_rdata1 
+                                                         + vlSelf->testbench__DOT__top__DOT__riscv__DOT__alu_op2))))))))))))
             : 0U);
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__branch_taken 
         = (1U & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush)));

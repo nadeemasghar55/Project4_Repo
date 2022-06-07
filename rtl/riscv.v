@@ -178,7 +178,7 @@ module riscv (
 
 
 assign IF_NEXT_PC = compressed_ins ? 2 : 4;
-assign EX_NEXT_PC = compressed_ins ? 4 : 4;
+assign EX_NEXT_PC = compressed_ins ? 2 : 4;
 
 //assign IF_NEXT_PC = 4;
 //assign EX_NEXT_PC = 4;
@@ -353,7 +353,7 @@ always @* begin
         $display("Illegal branch instruction at PC 0x%08x", ex_pc[31: 0]);
 end
 `endif
-
+/*
  `ifndef SYNTHESIS
  always @(*) begin
      if(c_valid) begin
@@ -364,7 +364,7 @@ end
      end
  end
  `endif
-
+*/
 
 
 always @(posedge clk or negedge resetb) begin
@@ -579,8 +579,10 @@ always @(posedge clk or negedge resetb) begin
         
         
         
-        fetch_pc            <= (c_valid) ? (if_pc + EX_NEXT_PC) :
-                               (ex_flush) ? (fetch_pc + EX_NEXT_PC) :
+        fetch_pc           <= //(c_valid) ? (if_pc + EX_NEXT_PC) :
+                               //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
+                               (c_valid || ex_c_valid) ? (if_pc + 2) :
+                               (ex_flush) ? (fetch_pc + 4) :
                                (ex_trap)  ? (ex_trap_pc)   :
                                {next_pc[31:1], 1'b0};
         /*

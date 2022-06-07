@@ -387,8 +387,8 @@ end
         .wready(wready & dmem_wvalid),
         .rresp (dmem_rresp),
         .rdata (dmem_rdata),
-        //.raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
-        .raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
+        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
+        //.raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
         .waddr (dmem_waddr[31:2]-(DRAMBASE/4)),
         .wdata (dmem_wdata),
         .wstrb (dmem_wstrb)
