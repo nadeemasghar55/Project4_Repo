@@ -187,7 +187,17 @@ assign if_insn              = imem_rdata;
 
 
 assign c_branch_kill        = (wb_branch && c_valid);
-assign inst                 = (flush || ex_c_valid || c_branch_kill) ? NOP : if_insn;
+//assign inst                 = (flush || ex_c_valid || (ex_flush && wb_flush && compressed_ins) || c_branch_kill) ? NOP : if_insn;
+
+//assign inst                 = (flush || illegal_com_ins || (ex_flush && wb_flush && compressed_ins) || c_branch_kill) ? NOP : if_insn;
+
+assign inst                 = (flush || ex_c_valid || illegal_com_ins || (ex_flush && wb_flush && compressed_ins && !c_valid) || c_branch_kill) ? NOP : if_insn;
+
+//assign inst                 = (flush || illegal_com_ins || (ex_flush && wb_flush && compressed_ins && !c_valid) || c_branch_kill) ? NOP : if_insn;
+
+//assign inst                 = (flush || ex_c_valid || (ex_flush && compressed_ins) || c_branch_kill) ? NOP : if_insn;
+
+//assign inst                 = (flush || (ex_flush && compressed_ins) || ex_c_valid || c_branch_kill) ? NOP : if_insn;
 
 
 //assign inst                 = flush ? NOP : if_insn;
@@ -222,6 +232,7 @@ always @(posedge clk or negedge resetb) begin
         if_pc               <= RESETVEC;
     end else if (!wb_stall) begin
         if_pc               <= fetch_pc;
+        //if_pc               <= c_valid ? if_pc + 2 : fetch_pc;
         //IF_NEXT_PC 	     <= compressed_ins ? 2 : 4;
     end
 end
@@ -312,8 +323,16 @@ always @(posedge clk or negedge resetb) begin
         ex_system           <= (inst[`OPCODE] == OP_SYSTEM) &&
                                (inst[`FUNC3] == 3'b000);
         ex_system_op        <= inst[`OPCODE] == OP_SYSTEM;
+        
         ex_pc               <= if_pc;
+        
+        //if(!c_valid)
+        //	begin
+        //		ex_pc               <= if_pc;
+        //	end
+        
         //EX_NEXT_PC          <= IF_NEXT_PC;
+        
         ex_c_valid          <= wb_branch ? 1'b0 : c_valid;
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
@@ -578,13 +597,18 @@ always @(posedge clk or negedge resetb) begin
         //fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   : {next_pc[31:1], 1'b0};
         
         
+        //if((inst == NOP) && ex_c_valid)
+        //	fetch_pc    <= fetch_pc;
+        //else 
         
-        fetch_pc           <= //(c_valid) ? (if_pc + EX_NEXT_PC) :
-                               //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
-                               (c_valid || ex_c_valid) ? (if_pc + 2) :
-                               (ex_flush) ? (fetch_pc + 4) :
-                               (ex_trap)  ? (ex_trap_pc)   :
-                               {next_pc[31:1], 1'b0};
+        	fetch_pc           <= //(c_valid) ? (if_pc + EX_NEXT_PC) :
+               	                //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
+               	                ((inst == NOP) && !illegal_com_ins && compressed_ins && c_valid && ex_flush) ? (fetch_pc + 4):
+               	                (c_valid || (ex_c_valid && !ex_jal && !ex_jalr )) ? (if_pc + 2) :
+               	                //(c_valid) ? (if_pc + 2) :
+               	                (ex_flush) ? (fetch_pc + 4) :
+               	                (ex_trap)  ? (ex_trap_pc)   :
+               	                {next_pc[31:1], 1'b0};
         /*
         fetch_pc            <= (c_valid) ? (if_pc + 2) :
                                (ex_flush) ? (fetch_pc + 4) :

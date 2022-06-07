@@ -897,8 +897,13 @@ VL_ATTR_COLD void Vriscv___024root___settle__TOP__0(Vriscv___024root* vlSelf) {
                | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_ill_csr)) 
               | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_illegal)));
     vlSelf->testbench__DOT__top__DOT__riscv__DOT__inst 
-        = ((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush) 
-             | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)) 
+        = ((((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__flush) 
+               | (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_c_valid)) 
+              | (IData)(vlSelf->testbench__DOT__top__DOT__illegal_ins_flag)) 
+             | ((((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__ex_flush) 
+                  & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_flush)) 
+                 & (IData)(vlSelf->testbench__DOT__top__DOT__compressed_ins_flag)) 
+                & (~ (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid)))) 
             | ((IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__wb_branch) 
                & (IData)(vlSelf->testbench__DOT__top__DOT__riscv__DOT__c_valid)))
             ? 0x13U : vlSelf->testbench__DOT__top__DOT__imem_rdata_decompressed);
