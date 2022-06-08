@@ -15,10 +15,6 @@ _bss_clear:
 
     la      sp, _stack
     call    main
-    add t5,zero,t5
-    add t1,zero,t1
-    addi t2,t2,2
-    addi t2,t2,-2
     tail    exit
 
     .section .text.trap, "ax"
