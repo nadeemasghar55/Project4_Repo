@@ -150,7 +150,7 @@ VL_INLINE_OPT void Vriscv___024root___sequent__TOP__0(Vriscv___024root* vlSelf) 
                                           : 0U);
         if (VL_UNLIKELY((0x64U < (IData)(vlSelf->testbench__DOT__count)))) {
             VL_WRITEF("Executing timeout\n");
-            VL_FINISH_MT("../rtl/../testbench/testbench.v", 145, "");
+            VL_FINISH_MT("../rtl/../testbench/testbench.v", 142, "");
         }
         vlSelf->testbench__DOT__next_pc = vlSelf->testbench__DOT__top__DOT__riscv__DOT__if_pc;
     } else {

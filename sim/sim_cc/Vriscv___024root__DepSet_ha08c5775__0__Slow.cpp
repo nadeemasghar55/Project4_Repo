@@ -17,7 +17,7 @@ VL_ATTR_COLD void Vriscv___024root___initial__TOP__0(Vriscv___024root* vlSelf) {
     // Body
     if (VL_UNLIKELY((0U != VL_TESTPLUSARGS_I("help")))) {
         VL_WRITEF("\n    +no-meminit   memory uninitialized\n    +dump         dump vcd file\n    +trace        generate trace log\n\n");
-        VL_FINISH_MT("../rtl/../testbench/testbench.v", 101, "");
+        VL_FINISH_MT("../rtl/../testbench/testbench.v", 93, "");
     }
     vlSelf->testbench__DOT__dump = VL_FOPEN_NN(std::string("dump.txt")
                                                , std::string("w"));

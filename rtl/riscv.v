@@ -198,7 +198,16 @@ always @(posedge clk or negedge resetb) begin
         if_pc               <= fetch_pc;
     end
 end
-
+/*
+always @( posedge clk)
+begin
+    if(if_pc== fetch_pc)
+    begin
+    $display("Fetch_PC, IF_PC ******************************, %d, %d", fetch_pc, if_pc);    
+    end
+    assert  (fetch_pc ==  if_pc) $display("================assertion Passed==============");
+else $error("=======assertion failed ==========");
+end*/
 ////////////////////////////////////////////////////////////
 //      F/D  E   W
 //          F/D  E   W
@@ -226,6 +235,8 @@ always @* begin
         default  : imm      = 'd0;
     endcase
 end
+
+
 
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
@@ -1033,9 +1044,12 @@ begin
 end
 endfunction
 
+
 /* verilator coverage_on */
 /* Verilator lint_on UNUSED */
 `endif // SYNTHESIS
+
+//else $error("assertion has failed");
 
 endmodule
 
