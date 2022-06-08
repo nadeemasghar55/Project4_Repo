@@ -1,1 +1,0 @@
-getch.o: ../getch.cpp
