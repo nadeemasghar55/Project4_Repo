@@ -199,15 +199,15 @@ always @(posedge clk or negedge resetb) begin
     end
 end
 
-always @( posedge clk)
-begin
-    if((if_pc+4)== fetch_pc)
-    begin
-    $display("Fetch_PC, IF_PC ******************************, %d, %d", fetch_pc, if_pc);    
-    end
-    assert  (fetch_pc ==  if_pc+) $display("================assertion Passed==============");
-else $error("=======assertion failed ==========");
-end
+// always @( posedge clk)
+// begin
+//     if((if_pc+4)== fetch_pc)
+//     begin
+//     $display("Fetch_PC, IF_PC ******************************, %d, %d", fetch_pc, if_pc);    
+//     end
+//     assert  (fetch_pc ==  if_pc+) $display("================assertion Passed==============");
+// else $error("=======assertion failed ==========");
+// end
 ////////////////////////////////////////////////////////////
 //      F/D  E   W
 //          F/D  E   W
