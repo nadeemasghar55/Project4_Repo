@@ -29,13 +29,6 @@
 import "DPI-C" function byte getch();
 `endif
 
-`ifdef SYNTHESIS
-module fpga_top(
-    input           clk,
-    input           resetb,
-    input           stall
-);
-`else
 `ifdef VERILATOR
 module testbench(
     input           clk,
@@ -45,7 +38,6 @@ module testbench(
 `else
 module testbench();
 `endif // VERILATOR
-`endif // SYNTHESIS
 
     `include "opcode.vh"
 
@@ -136,10 +128,15 @@ always @(posedge clk or negedge resetb) begin
         next_pc     <= `TOP.if_pc;
 
         if (next_pc == `TOP.if_pc)
+        begin
             count   <= count + 1;
+           // $display("next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
+        end
         else
+        begin
             count   <= 8'h0;
-
+           // $display("else+_next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
+        end
         if (count > 100) begin
             $display("Executing timeout");
             #10 $finish(2);
@@ -463,7 +460,7 @@ end
     end
 `endif // SYNTHESIS
 
-`endif // SINGLE_RAM
+//`endif // SINGLE_RAM
 
 `ifndef SYNTHESIS
 `ifdef TRACE
