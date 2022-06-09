@@ -92,6 +92,15 @@ module top (
     wire            [31: 0] drdata;
     reg                     data_sel;
     wire                    sw_irq;
+    
+    
+    	// Modification for C-Extension
+     
+    wire	    [31: 0] imem_rdata_decompressed;
+    wire		    illegal_ins_flag;
+    wire		    compressed_ins_flag;
+    
+    //
 
 
 	// Modification for C-Extension
@@ -138,8 +147,14 @@ end
         .imem_valid         (imem_valid),
         .imem_addr          (imem_addr),
         .imem_rresp         (imem_rresp),
+<<<<<<< HEAD
         .imem_rdata         (imem_rdata_decompressed),
         //.imem_rdata         (imem_rdata),
+=======
+        //.imem_rdata         (imem_rdata),
+        .imem_rdata         (imem_rdata_decompressed),
+        
+>>>>>>> Soban-dev
 
         .dmem_wready        (dwready),
         .dmem_wvalid        (dwvalid),
@@ -152,7 +167,10 @@ end
         .dmem_raddr         (draddr),
         .dmem_rresp         (drresp),
         .dmem_rdata         (drdata),
+<<<<<<< HEAD
      
+=======
+>>>>>>> Soban-dev
         
         // Modification for C-Extension
         
@@ -160,7 +178,11 @@ end
      	.compressed_ins     (compressed_ins_flag)
      	
      	/////////////////////////////////////////
+<<<<<<< HEAD
      );
+=======
+    );
+>>>>>>> Soban-dev
 
     assign twready          = dwready && (dwaddr[31:28] == MMIO_BASE);
     assign twaddr           = dwaddr;
@@ -191,6 +213,17 @@ end
         .sw_irq             (sw_irq),
         .ex_irq             (ex_irq)
     );
+    
+        // Modification for C-Extension
+    
+    comp_decoder comp_decoder (	
+    	.ins 		     (imem_rdata),
+    	.ins_out 	     (imem_rdata_decompressed),
+    	.illegal_ins	     (illegal_ins_flag),
+    	.compressed_ins     (compressed_ins_flag)
+    );
+    
+    //////////////////////////////////////////////////
 
 
     // Modification for C-Extension

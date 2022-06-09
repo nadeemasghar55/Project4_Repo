@@ -41,7 +41,7 @@ int mem_size = 128*1024; // default memory size
 #define PRINT_TIMELOG 1
 #define MAXLEN      1024
 
-#define TIME_LOG    if (ft && PRINT_TIMELOG) fprintf(ft, "%10d ", csr.cycle.d.lo)
+//#define //TIME_LOG    if (ft && PRINT_TIMELOG) fprintf(ft, "%10d ", csr.cycle.d.lo)
 #define TRACE_LOG   if (ft) fprintf(ft,
 #define TRACE_END   )
 
@@ -665,19 +665,22 @@ int main(int argc, char **argv) {
         switch(inst.r.op) {
         case OP_AUIPC: { // U-Type
             regs[inst.u.rd] = pc + to_imm_u(inst.u.imm);
-            TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
+            //TIME_LOG; 
+            TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
                        inst.u.rd, regname[inst.u.rd], regs[inst.u.rd] TRACE_END;
             break;
         }
         case OP_LUI: { // U-Type
             regs[inst.u.rd] = to_imm_u(inst.u.imm);
-            TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
+           // TIME_LOG; 
+           TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
                       inst.u.rd, regname[inst.u.rd], regs[inst.u.rd] TRACE_END;
             break;
         }
         case OP_JAL: { // J-Type
             regs[inst.j.rd] = compressed ? pc + 2 : pc + 4;
-            TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
+          //  TIME_LOG; 
+            TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n", pc, inst.inst,
                       inst.j.rd, regname[inst.j.rd], regs[inst.j.rd] TRACE_END;
             pc += to_imm_j(inst.j.imm);
             if (to_imm_j(inst.j.imm) == 0) {
@@ -690,7 +693,8 @@ int main(int argc, char **argv) {
         }
         case OP_JALR: { // I-Type
             int new_pc = compressed ? pc + 2 : pc + 4;
-            TIME_LOG; TRACE_LOG "%08x ", pc TRACE_END;
+           // TIME_LOG;
+            TRACE_LOG "%08x ", pc TRACE_END;
             pc = regs[inst.i.rs1] + to_imm_i(inst.i.imm);
             regs[inst.i.rd] = new_pc;
             TRACE_LOG "%08x x%02u (%s) <= 0x%08x\n", inst.inst, inst.i.rd,
@@ -700,7 +704,8 @@ int main(int argc, char **argv) {
             continue;
         }
         case OP_BRANCH: { // B-Type
-            TIME_LOG; TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
+           // TIME_LOG; 
+            TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
             int offset = to_imm_b(inst.b.imm2, inst.b.imm1);
             switch(inst.b.func3) {
                 case OP_BEQ:
@@ -765,7 +770,8 @@ int main(int argc, char **argv) {
             int address = regs[inst.i.rs1] + to_imm_i(inst.i.imm);
             memaddr = address;
             if (singleram) CYCLE_ADD(1);
-            TIME_LOG; TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
+            //TIME_LOG;
+             TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
             if (address < DMEM_BASE || address > DMEM_BASE+DMEM_SIZE) {
                 switch(address) {
                     case MMIO_PUTC:
@@ -876,7 +882,8 @@ int main(int argc, char **argv) {
                 if (inst.i.func3 == OP_SB ||
                     inst.i.func3 == OP_SH ||
                     inst.i.func3 == OP_SW) {
-                    TIME_LOG; TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
+                    //TIME_LOG; 
+                    TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
                 }
                 switch(address) {
                     case MMIO_PUTC:
@@ -930,7 +937,8 @@ int main(int argc, char **argv) {
                     continue;
                 }
             }
-            TIME_LOG; TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
+            //TIME_LOG;
+			 TRACE_LOG "%08x %08x", pc, inst.inst TRACE_END;
             address = DVA2PA(address);
             switch(inst.s.func3) {
                 case OP_SB:
@@ -1009,7 +1017,8 @@ int main(int argc, char **argv) {
                     TRAP(TRAP_INST_ILL, inst.inst);
                     continue;
             }
-            TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
+            //TIME_LOG; 
+            TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
                       pc, inst.inst, inst.i.rd, regname[inst.i.rd],
                       regs[inst.i.rd] TRACE_END;
             break;
@@ -1133,13 +1142,15 @@ int main(int argc, char **argv) {
                         continue;
                 }
             }
-            TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
+            //TIME_LOG;
+             TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
                       pc, inst.inst, inst.r.rd, regname[inst.r.rd],
                       regs[inst.r.rd] TRACE_END;
             break;
         }
         case OP_FENCE: {
-            TIME_LOG; TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
+            //TIME_LOG; 
+            TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
             break;
         }
         case OP_SYSTEM: { // I-Type
@@ -1151,7 +1162,8 @@ int main(int argc, char **argv) {
             // RDCYCLE, RDTIME and RDINSTRET are read only
             switch(inst.i.func3) {
                 case OP_ECALL:
-                    TIME_LOG; TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
+                    //TIME_LOG;
+                     TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
                     switch (inst.i.imm & 3) {
                        case 0: // ecall
                            res = srv32_syscall(regs[A7], regs[A0],
@@ -1238,13 +1250,15 @@ int main(int argc, char **argv) {
                     break;
                 default:
                     printf("Unknown system instruction at PC 0x%08x\n", pc);
-                    TIME_LOG; TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
+                    //TIME_LOG; 
+                    TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
                     TRAP(TRAP_INST_ILL, inst.inst);
                     continue;
             }
             if (csr_op) {
                 int result = csr_rw(inst.i.imm, csr_type, val, update, &regs[inst.i.rd]);
-                TIME_LOG; TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
+                //TIME_LOG;
+                 TRACE_LOG "%08x %08x x%02u (%s) <= 0x%08x\n",
                           pc, inst.inst, inst.i.rd,
                           regname[inst.i.rd], regs[inst.i.rd] TRACE_END;
                 if (!result) {
@@ -1256,7 +1270,8 @@ int main(int argc, char **argv) {
         }
         default: {
             printf("Illegal instruction at PC 0x%08x\n", pc);
-            TIME_LOG; TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
+            ////TIME_LOG; 
+            TRACE_LOG "%08x %08x\n", pc, inst.inst TRACE_END;
             TRAP(TRAP_INST_ILL, inst.inst);
             continue;
         }
