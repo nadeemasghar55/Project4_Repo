@@ -35,14 +35,15 @@ BFLAGS      = -O3 -cc -Wall -Wno-STMTDLY -Wno-UNUSED \
               +define+MEMSIZE=$(memsize) \
               $(if $(_top), +define+SINGLE_RAM) \
               $(if $(_rv32c), +define+RV32C_ENABLED) \
-              $(if $(_coverage), --coverage) \
-              --trace-fst --Mdir sim_cc --build --exe sim_main.cpp getch.cpp
+              $(if $(_coverage), --coverage ) \
+              --assert	--trace-fst --Mdir sim_cc --build --exe sim_main.cpp getch.cpp
 TARGET_SIM  = verilator
 else
 BFLAGS      = $(if $(_top), -D SINGLE_RAM=1) $(if $(_rv32c), -DRV32C_ENABLED=1)
 endif
 
 FILELIST    = -f filelist.txt $(if $(_top), ../rtl/top_s.v, ../rtl/top.v)
+
 
 all: $(TARGET)
 
