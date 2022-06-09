@@ -506,8 +506,7 @@ always @* begin
         'd24: regname = "s8";
         'd25: regname = "s9";
         'd26: regname = "s10";
-        'd27: regname = "s11";
-        'd28: regname = "t3";
+        'd27: regname = "s11";        'd28: regname = "t3";
         'd29: regname = "t4";
         'd30: regname = "t5";
         'd31: regname = "t6";
@@ -526,9 +525,9 @@ end
 
 always @(posedge clk) begin
     if ($test$plusargs("trace") != 0 && !`TOP.wb_stall && !`TOP.stall_r &&
-        !`TOP.wb_flush && fillcount == 2'b11) begin
+        !`TOP.wb_flush && fillcount == 2'b11  && `TOP.wb_insn !=NOP) begin
         `ifdef PRINT_TIMELOG
-        $fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
+        //$fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
         `endif
         $fwrite(fp, "%08x %08x", `TOP.wb_pc, `TOP.wb_insn);
         if (`TOP.wb_mem2reg && !`TOP.wb_ld_align_excp) begin

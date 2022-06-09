@@ -20,7 +20,7 @@
 // SOFTWARE.
 
 // Define it to enable RV32M multiply extension
-`define RV32M_ENABLED       1
+`define RV32M_ENABLED      1
 
 //Modification for C	
 // Define it to enable RV32C compressed instruction extension
