@@ -29,6 +29,13 @@
 import "DPI-C" function byte getch();
 `endif
 
+`ifdef SYNTHESIS
+module fpga_top(
+    input           clk,
+    input           resetb,
+    input           stall
+);
+`else
 `ifdef VERILATOR
 module testbench(
     input           clk,
@@ -38,6 +45,7 @@ module testbench(
 `else
 module testbench();
 `endif // VERILATOR
+`endif // SYNTHESIS
 
     `include "opcode.vh"
 
@@ -128,15 +136,10 @@ always @(posedge clk or negedge resetb) begin
         next_pc     <= `TOP.if_pc;
 
         if (next_pc == `TOP.if_pc)
-        begin
             count   <= count + 1;
-           // $display("next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
-        end
         else
-        begin
             count   <= 8'h0;
-           // $display("else+_next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
-        end
+
         if (count > 100) begin
             $display("Executing timeout");
             #10 $finish(2);
@@ -156,9 +159,13 @@ end
 `endif // SYNTHESIS
 
 `ifdef SINGLE_RAM
+<<<<<<< HEAD
 initial begin
 	$display("******************************************************* SINGLE RAM ************************************************************************");
 end
+=======
+
+>>>>>>> Soban-dev
     wire            mem_ready;
     wire            mem_valid;
     wire            mem_we;
@@ -276,9 +283,13 @@ end
 `endif // SYNTHESIS
 
 `else // SINGLE_RAM
+<<<<<<< HEAD
 initial begin
 	$display("******************************************************* IMEM/DMEM Different ************************************************************************");
 end
+=======
+
+>>>>>>> Soban-dev
     wire            imem_ready;
     wire            imem_valid;
     wire    [31: 0] imem_addr;
@@ -370,8 +381,8 @@ end
         .wready(1'b0),
         .rresp (imem_rresp),
         .rdata (imem_rdata),
-        //.raddr (imem_addr[31:2]-(IRAMBASE/4)),				
-        .raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
+        .raddr (imem_addr[31:2]-(IRAMBASE/4)),				
+        //.raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
         .waddr (30'h0),
         .wdata (32'h0),
         .wstrb (4'h0)
@@ -389,8 +400,13 @@ end
         .wready(wready & dmem_wvalid),
         .rresp (dmem_rresp),
         .rdata (dmem_rdata),
-        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
+        			
+        //`ifdef RV32C_ENABLED
         //.raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
+        //`else
+        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),
+        //`endif
+        
         .waddr (dmem_waddr[31:2]-(DRAMBASE/4)),
         .wdata (dmem_wdata),
         .wstrb (dmem_wstrb)
@@ -462,7 +478,7 @@ end
     end
 `endif // SYNTHESIS
 
-//`endif // SINGLE_RAM
+`endif // SINGLE_RAM
 
 `ifndef SYNTHESIS
 `ifdef TRACE

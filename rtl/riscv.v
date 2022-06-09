@@ -73,17 +73,10 @@ module riscv (
 
 `include "opcode.vh"
 
-<<<<<<< HEAD
-// Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
-
-`define IF_NEXT_PC (4)
-`define EX_NEXT_PC (4)
-=======
 //`define IF_NEXT_PC (4)
 //`define EX_NEXT_PC (4)
 
 
->>>>>>> Soban-dev
 
 //    wire 	     [31:0] IF_NEXT_PC;
 //    wire 	     [31:0] EX_NEXT_PC;
@@ -210,18 +203,22 @@ module riscv (
     wire		   [31:0] EX_NEXT_PC;
 
 
-    wire c_valid = compressed_ins && !illegal_com_ins && !ex_c_valid;
 
+`ifdef RV32C_ENABLED
+    wire c_valid = compressed_ins && !illegal_com_ins && !ex_c_valid;
 
 assign IF_NEXT_PC = compressed_ins ? 2 : 4;
 assign EX_NEXT_PC = compressed_ins ? 2 : 4;
+`else
+assign IF_NEXT_PC = 4;
+assign EX_NEXT_PC = 4;
+`endif
 
-//assign IF_NEXT_PC = 4;
-//assign EX_NEXT_PC = 4;
 
 
 assign if_insn              = imem_rdata;
 
+`ifdef RV32C_ENABLED
 
 <<<<<<< HEAD
 //Commenting this for C 
@@ -250,8 +247,14 @@ assign inst                 = (flush || ex_c_valid || illegal_com_ins || (ex_flu
 
 //assign inst                 = (flush || (ex_flush && compressed_ins) || ex_c_valid || c_branch_kill) ? NOP : if_insn;
 
+`else
+assign inst                 = flush ? NOP : if_insn;
+`endif
 
+<<<<<<< HEAD
 //assign inst                 = flush ? NOP : if_insn;
+>>>>>>> Soban-dev
+=======
 >>>>>>> Soban-dev
 assign if_stall             = stall_r || !imem_valid;
 assign dmem_waddr           = wb_waddr;
@@ -289,15 +292,6 @@ always @(posedge clk or negedge resetb) begin
     end
 end
 
-// always @( posedge clk)
-// begin
-//     if((if_pc+4)== fetch_pc)
-//     begin
-//     $display("Fetch_PC, IF_PC ******************************, %d, %d", fetch_pc, if_pc);    
-//     end
-//     assert  (fetch_pc ==  if_pc+) $display("================assertion Passed==============");
-// else $error("=======assertion failed ==========");
-// end
 ////////////////////////////////////////////////////////////
 //      F/D  E   W
 //          F/D  E   W
@@ -325,8 +319,6 @@ always @* begin
         default  : imm      = 'd0;
     endcase
 end
-
-
 
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
@@ -414,7 +406,13 @@ always @(posedge clk or negedge resetb) begin
         
         //EX_NEXT_PC          <= IF_NEXT_PC;
         
+        `ifdef RV32C_ENABLED
         ex_c_valid          <= wb_branch ? 1'b0 : c_valid;
+<<<<<<< HEAD
+>>>>>>> Soban-dev
+=======
+        `endif
+        
 >>>>>>> Soban-dev
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
@@ -443,6 +441,7 @@ always @(posedge clk or negedge resetb) begin
                                  
                                  (inst[`OPCODE] == OP_FENCE )||
 <<<<<<< HEAD
+<<<<<<< HEAD
                                  
                                  //Commented this line for C
                                  
@@ -459,6 +458,16 @@ always @(posedge clk or negedge resetb) begin
 =======
                                  (inst[`OPCODE] == OP_SYSTEM)||
                                  (c_valid));;
+>>>>>>> Soban-dev
+=======
+                                 
+                                 `ifdef RV32C_ENABLED
+                                 (inst[`OPCODE] == OP_SYSTEM)||
+                                 (c_valid));
+                                 `else
+                                 (inst[`OPCODE] == OP_SYSTEM));
+                                 `endif
+                                 
 >>>>>>> Soban-dev
         `ifdef RV32M_ENABLED
         ex_mul              <= (inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h1);
@@ -536,9 +545,13 @@ assign ex_inst_ill_excp     = !ex_flush && (ex_ill_branch || ex_ill_csr || ex_il
 //assign ex_inst_align_excp   = compressed_ins?!ex_flush && next_pc[0]:!ex_flush && next_pc[1];
 //assign ex_inst_align_excp   = !ex_flush && next_pc[1];
 
+`ifdef RV32C_ENABLED
 //C-Extension
 assign ex_inst_align_excp   = !ex_flush && next_pc[0];
 //
+`else
+assign ex_inst_align_excp   = !ex_flush && next_pc[1];
+`endif
 
 assign ex_timer_irq         = timer_irq && csr_mstatus[MIE] && csr_mie[MTIE] && !ex_system_op && !ex_flush;
 assign ex_sw_irq            = sw_irq && csr_mstatus[MIE] && csr_mie[MSIE] && !ex_system_op && !ex_flush;
@@ -716,15 +729,19 @@ always @(posedge clk or negedge resetb) begin
         //if((inst == NOP) && ex_c_valid)
         //	fetch_pc    <= fetch_pc;
         //else 
-        
+        	`ifdef RV32C_ENABLED
         	fetch_pc           <= //(c_valid) ? (if_pc + EX_NEXT_PC) :
                	                //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
+               	               
                	                ((inst == NOP) && !illegal_com_ins && compressed_ins && c_valid && ex_flush) ? (fetch_pc + 4):
                	                (c_valid || (ex_c_valid && !ex_jal && !ex_jalr )) ? (if_pc + 2) :
                	                //(c_valid) ? (if_pc + 2) :
                	                (ex_flush) ? (fetch_pc + 4) :
                	                (ex_trap)  ? (ex_trap_pc)   :
                	                {next_pc[31:1], 1'b0};
+           	`else
+           	fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   : {next_pc[31:1], 1'b0};
+           	`endif
         /*
         fetch_pc            <= (c_valid) ? (if_pc + 2) :
                                (ex_flush) ? (fetch_pc + 4) :
@@ -839,29 +856,33 @@ always @* begin
                                                   dmem_rdata[ 7: 0]};
                         2'b01: wb_rdata[31: 0] = {{24{dmem_rdata[15]}},
                                                   dmem_rdata[15: 8]};
-                  /*
-                        2'b10: wb_rdata[31: 0] = {{24{dmem_rdata[23]}},
-                                                  dmem_rdata[23:16]};
-                        2'b11: wb_rdata[31: 0] = {{24{dmem_rdata[31]}},
-                                                  dmem_rdata[31:24]};
-                  */
-                  //Modification for C                                
+                  //Modification for C
+                  `ifdef RV32C_ENABLED                                
                         2'b10: wb_rdata[31: 0] = {{24{dmem_rdata[7]}},
                                                   dmem_rdata[ 7: 0]};
                         2'b11: wb_rdata[31: 0] = {{24{dmem_rdata[15]}},
                                                   dmem_rdata[15: 8]};
+                   `else
+                   
+                        2'b10: wb_rdata[31: 0] = {{24{dmem_rdata[23]}},
+                                                  dmem_rdata[23:16]};
+                        2'b11: wb_rdata[31: 0] = {{24{dmem_rdata[31]}},
+                                                  dmem_rdata[31:24]};
+                   `endif
                  /////////
                     endcase
                  end
         OP_LH  : begin
-        	/*
+        	  
+               //Modification for C  
+                `ifdef RV32C_ENABLED               
+                     wb_rdata = {{16{dmem_rdata[15]}}, dmem_rdata[15: 0]};
+               /////
+               `else
                      wb_rdata = (wb_raddr[1]) ?
                                {{16{dmem_rdata[31]}}, dmem_rdata[31:16]} :
                                {{16{dmem_rdata[15]}}, dmem_rdata[15: 0]};
-               */  
-               //Modification for C                
-                     wb_rdata = {{16{dmem_rdata[15]}}, dmem_rdata[15: 0]};
-               /////
+               `endif
                  end
         OP_LW  : begin
                     wb_rdata = dmem_rdata;
@@ -871,28 +892,27 @@ always @* begin
                         2'b00: wb_rdata[31: 0] = {24'h0, dmem_rdata[7:0]};
                         2'b01: wb_rdata[31: 0] = {24'h0, dmem_rdata[15:8]};
                         
-                   /*
-                        2'b10: wb_rdata[31: 0] = {24'h0, dmem_rdata[23:16]};
-                        2'b11: wb_rdata[31: 0] = {24'h0, dmem_rdata[31:24]};
-                   */
-                        
                    //Modification for C 
+                   `ifdef RV32C_ENABLED
                         2'b10: wb_rdata[31: 0] = {24'h0, dmem_rdata[7:0]};
                         2'b11: wb_rdata[31: 0] = {24'h0, dmem_rdata[15:8]};
                   /////////////
-                        
+                  `else
+                        2'b10: wb_rdata[31: 0] = {24'h0, dmem_rdata[23:16]};
+                        2'b11: wb_rdata[31: 0] = {24'h0, dmem_rdata[31:24]};
+                   `endif
                     endcase
                  end
-        OP_LHU : begin
-        
-        	    /*
-                    wb_rdata = (wb_raddr[1]) ?
-                               {16'h0, dmem_rdata[31:16]} :
-                               {16'h0, dmem_rdata[15: 0]};
-                    */           
+        OP_LHU : begin           
                     //Modification for C
+                    `ifdef RV32C_ENABLED
                                 wb_rdata = {16'h0, dmem_rdata[15: 0]};
                     //////
+                    `else
+                    		wb_rdata = (wb_raddr[1]) ?
+                               {16'h0, dmem_rdata[31:16]} :
+                               {16'h0, dmem_rdata[15: 0]};
+                    `endif
                  end
         default: begin
                     wb_rdata = 32'h0;
@@ -912,10 +932,15 @@ assign ex_trap_pc   = (ex_systemcall && ex_imm[1:0] == 2'b10) ? // mret
                       csr_mepc :
                       csr_mtvec[0] ?
                       {csr_mtvec[31:2], 2'b00} + {26'h0, ex_mcause[3:0], 2'b00} :
-                      //{csr_mtvec[31:2], 2'b00};
+                      
                       //C-Extension
-                      {csr_mtvec[31:1], 1'b00};								
+                      `ifdef RV32C_ENABLED
+                      {csr_mtvec[31:1], 1'b0};								
 			//
+			`else
+			{csr_mtvec[31:2], 2'b00};
+			`endif
+			
 assign ex_csr_data  = ex_alu_op[2] ? {27'h0, ex_src1_sel[4:0]} : reg_rdata1;
 
 always @* begin
@@ -1289,12 +1314,9 @@ begin
 end
 endfunction
 
-
 /* verilator coverage_on */
 /* Verilator lint_on UNUSED */
 `endif // SYNTHESIS
-
-//else $error("assertion has failed");
 
 endmodule
 
