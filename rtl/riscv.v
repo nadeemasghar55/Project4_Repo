@@ -20,14 +20,7 @@
 // SOFTWARE.
 
 // Define it to enable RV32M multiply extension
-`define RV32M_ENABLED      1
-
-//Modification for C	
-// Define it to enable RV32C compressed instruction extension
-
-//`define RV32C_ENABLED
-//`include "comp_decoder.v"
-///////////////////////////
+`define RV32M_ENABLED       1
 
 // ============================================================
 // RISCV for imem and dmem separate port
@@ -63,12 +56,11 @@ module riscv (
     input                   dmem_rvalid,
     output          [31: 0] dmem_raddr,
     input                   dmem_rresp,
-    input           [31: 0] dmem_rdata	//,
+    input           [31: 0] dmem_rdata,
     
-    //Modified for C Extension
-    input 		     illegal_com_ins,				//flag
-    input 		     compressed_ins				//flag
-    //
+    
+    input 			illegal_com_ins,
+    input			compressed_ins
 );
 
 `include "opcode.vh"
@@ -78,15 +70,6 @@ module riscv (
 
 
 
-//    wire 	     [31:0] IF_NEXT_PC;
-//    wire 	     [31:0] EX_NEXT_PC;
-    
-//    assign IF_NEXT_PC = compressed_ins ? 2 : 4;
-//    assign EX_NEXT_PC = compressed_ins ? 2 : 4;
-    
-// Modification required for IF_NEXT_PC in case of Compresseds Instruction  ********************************************************************************************************
-
-    
     reg                     stall_r;
     wire            [31: 0] inst;
     reg                     flush;
@@ -149,21 +132,9 @@ module riscv (
     wire                    ex_interrupt;
     reg                     ex_c_valid;
 
-	//Modification for C
-    reg                     ex_c_valid;
-    //
-
 `ifdef RV32M_ENABLED
     reg                     ex_mul;
 `endif // RV32M_ENABLED
-
-
-
-
-
-
-
-
 
     reg                     wb_alu2reg;
     reg             [31: 0] wb_result;
@@ -215,25 +186,10 @@ assign EX_NEXT_PC = 4;
 `endif
 
 
-
 assign if_insn              = imem_rdata;
 
 `ifdef RV32C_ENABLED
 
-<<<<<<< HEAD
-//Commenting this for C 
-//assign inst                 = flush ? NOP : if_insn;						//In case of Flush, inst = NOP, otherwise, inst = if_inst
-//
-
-//Modification for C
-
-//assign inst                 = (flush || ex_c_valid) ? NOP : decomp_inst;
-//assign inst                 = (flush || ex_c_valid) ? NOP : imem_rdata;
-assign inst                 = (flush || ex_c_valid) ? NOP : if_insn;
-
-//
-
-=======
 assign c_branch_kill        = (wb_branch && c_valid);
 //assign inst                 = (flush || ex_c_valid || (ex_flush && wb_flush && compressed_ins) || c_branch_kill) ? NOP : if_insn;
 
@@ -251,11 +207,6 @@ assign inst                 = (flush || ex_c_valid || illegal_com_ins || (ex_flu
 assign inst                 = flush ? NOP : if_insn;
 `endif
 
-<<<<<<< HEAD
-//assign inst                 = flush ? NOP : if_insn;
->>>>>>> Soban-dev
-=======
->>>>>>> Soban-dev
 assign if_stall             = stall_r || !imem_valid;
 assign dmem_waddr           = wb_waddr;
 assign dmem_raddr           = ex_memaddr;
@@ -347,17 +298,6 @@ always @(posedge clk or negedge resetb) begin
         `ifdef RV32M_ENABLED
         ex_mul              <= 1'b0;
         `endif // RV32M_ENABLED
-        
-        //Modified for C extension
-        
-        //`ifdef RV32C_ENABLED
-        //ex_com              <= 1'b0;
-        
-        ex_c_valid          <= 1'b0;
-        //`endif // RV32C_ENABLED
-        
-        // Modification Required for ex_compress <= 1'b0;
-        
     end else if (!if_stall) begin
         ex_imm              <= imm;
         ex_imm_sel          <= (inst[`OPCODE] == OP_JALR  ) ||
@@ -392,13 +332,6 @@ always @(posedge clk or negedge resetb) begin
         
         ex_pc               <= if_pc;
         
-<<<<<<< HEAD
-        //Modification for C
-        
-        ex_c_valid          <= c_valid;
-        
-        //
-=======
         //if(!c_valid)
         //	begin
         //		ex_pc               <= if_pc;
@@ -408,12 +341,8 @@ always @(posedge clk or negedge resetb) begin
         
         `ifdef RV32C_ENABLED
         ex_c_valid          <= wb_branch ? 1'b0 : c_valid;
-<<<<<<< HEAD
->>>>>>> Soban-dev
-=======
         `endif
         
->>>>>>> Soban-dev
         ex_illegal          <= !((inst[`OPCODE] == OP_AUIPC )||
                                  (inst[`OPCODE] == OP_LUI   )||
                                  (inst[`OPCODE] == OP_JAL   )||
@@ -435,31 +364,7 @@ always @(posedge clk or negedge resetb) begin
                                  `ifdef RV32M_ENABLED
                                  ((inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h01)) ||
                                  `endif // RV32M_ENABLED
-                                 //`ifdef RV32C_ENABLED
-                                 //(!illegal_com_ins) ||
-                                 //`endif // RV32C_ENABLED
-                                 
                                  (inst[`OPCODE] == OP_FENCE )||
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                 
-                                 //Commented this line for C
-                                 
-                                 //(inst[`OPCODE] == OP_SYSTEM));
-                                 
-                                 //
-                                 
-                                 //Modified this for C
-                                 
-                                 (inst[`OPCODE] == OP_SYSTEM)||
-                                 (c_valid));
-                                 
-                                 //
-=======
-                                 (inst[`OPCODE] == OP_SYSTEM)||
-                                 (c_valid));;
->>>>>>> Soban-dev
-=======
                                  
                                  `ifdef RV32C_ENABLED
                                  (inst[`OPCODE] == OP_SYSTEM)||
@@ -468,15 +373,9 @@ always @(posedge clk or negedge resetb) begin
                                  (inst[`OPCODE] == OP_SYSTEM));
                                  `endif
                                  
->>>>>>> Soban-dev
         `ifdef RV32M_ENABLED
         ex_mul              <= (inst[`OPCODE] == OP_ARITHR) && (inst[`FUNC7] == 'h1);
         `endif // RV32M_ENABLED
-        
-        //Modified for C
-       // `ifdef RV32C_ENABLED
-       // ex_com              <= compressed_ins;
-       // `endif // RV32C_ENABLED
     end
 end
 
@@ -714,15 +613,6 @@ always @(posedge clk or negedge resetb) begin
         fetch_pc            <= RESETVEC;
     end else if (!ex_stall) begin
         
-<<<<<<< HEAD
-        //Commented for C
-        //fetch_pc            <= (ex_flush) ? (fetch_pc + `EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   :{next_pc[31:1], 1'b0};
-        //
-	//Modified for C
-	fetch_pc            <= (ex_flush) ? (fetch_pc + 4) : (ex_trap)  ? (ex_trap_pc) : (c_valid)  ? (if_pc    + 2) :{next_pc[31:1], 1'b0};
-	//        
-
-=======
         //fetch_pc            <= (ex_flush) ? (fetch_pc + EX_NEXT_PC) : (ex_trap)  ? (ex_trap_pc)   : {next_pc[31:1], 1'b0};
         
         
@@ -748,11 +638,8 @@ always @(posedge clk or negedge resetb) begin
                                (ex_trap)  ? (ex_trap_pc)   :
                                {next_pc[31:1], 1'b0};
         */
->>>>>>> Soban-dev
     end
 end
-
-// write back stage
 
 always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
@@ -771,11 +658,6 @@ always @(posedge clk or negedge resetb) begin
                                `ifdef RV32M_ENABLED
                                ex_mul ||
                                `endif
-                               //Modified for C
-                               //`ifdef RV32C_ENABLED
-                               //ex_com ||
-                               //`endif
-                               //
                                (ex_mem2reg && !ex_ld_align_excp);
         wb_dst_sel          <= ex_dst_sel;
         wb_branch           <= branch_taken || ex_trap;

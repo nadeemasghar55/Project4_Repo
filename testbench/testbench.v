@@ -159,13 +159,7 @@ end
 `endif // SYNTHESIS
 
 `ifdef SINGLE_RAM
-<<<<<<< HEAD
-initial begin
-	$display("******************************************************* SINGLE RAM ************************************************************************");
-end
-=======
 
->>>>>>> Soban-dev
     wire            mem_ready;
     wire            mem_valid;
     wire            mem_we;
@@ -283,13 +277,7 @@ end
 `endif // SYNTHESIS
 
 `else // SINGLE_RAM
-<<<<<<< HEAD
-initial begin
-	$display("******************************************************* IMEM/DMEM Different ************************************************************************");
-end
-=======
 
->>>>>>> Soban-dev
     wire            imem_ready;
     wire            imem_valid;
     wire    [31: 0] imem_addr;
@@ -348,8 +336,7 @@ end
         .dmem_rvalid(dmem_rvalid),
         .dmem_raddr (dmem_raddr),
         .dmem_rresp (dmem_rresp),
-        .dmem_rdata (dmem_rdata)//,
-        //.ins (imem_rdata)
+        .dmem_rdata (dmem_rdata)
     );
 
 `ifdef RV32C_ENABLED
@@ -524,7 +511,8 @@ always @* begin
         'd24: regname = "s8";
         'd25: regname = "s9";
         'd26: regname = "s10";
-        'd27: regname = "s11";        'd28: regname = "t3";
+        'd27: regname = "s11";
+        'd28: regname = "t3";
         'd29: regname = "t4";
         'd30: regname = "t5";
         'd31: regname = "t6";
@@ -543,9 +531,9 @@ end
 
 always @(posedge clk) begin
     if ($test$plusargs("trace") != 0 && !`TOP.wb_stall && !`TOP.stall_r &&
-        !`TOP.wb_flush && fillcount == 2'b11  && `TOP.wb_insn !=NOP) begin
+        !`TOP.wb_flush && fillcount == 2'b11 && `TOP.wb_insn!=NOP) begin
         `ifdef PRINT_TIMELOG
-        //$fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
+       // $fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
         `endif
         $fwrite(fp, "%08x %08x", `TOP.wb_pc, `TOP.wb_insn);
         if (`TOP.wb_mem2reg && !`TOP.wb_ld_align_excp) begin

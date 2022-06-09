@@ -228,19 +228,9 @@ begin
             begin
                 if (ins[6:2] != 5'b0) 
                 begin        
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    //ins_out = {12'd0, {ins[6:2]}, 3'b0, {ins[11:7]}, {OP_ARITHI}}; // C.MV => addi rd, rs2, 0
-                    ins_out = {7'b0, {ins[6:2]}, 5'b0, 3'b0, {ins[11:7]}, {OP_ARITHR}}; // C.MV => add rd/rs1, x0, rs2
-=======
-                    ins_out = {12'd0, {ins[6:2]}, 3'b0, {ins[11:7]}, {OP_ARITHI}}; // C.MV => addi rd, rs2, 0
-                    //ins_out = {7'b0, {ins[6:2]}, 5'b0, 3'b0, {ins[11:7]}, {OP_ARITHI}}; // C.MV => add rd/rs1, x0, rs2
->>>>>>> Soban-dev
-=======
                     //ins_out = {12'd0, {ins[6:2]}, 3'b0, {ins[11:7]}, {OP_ARITHI}}; // C.MV => addi rd, rs2, 0
                     ins_out = {7'b0, {ins[6:2]}, 5'b0, 3'b0, {ins[11:7]}, {OP_ARITHR}}; // C.MV => add rd/rs1, x0, rs2
                     //instr_o = {7'b0, instr_i[6:2], 5'b0, 3'b0, instr_i[11:7], {OP_ARITHR}};
->>>>>>> Soban-dev
                 end 
                 else 
                 begin
