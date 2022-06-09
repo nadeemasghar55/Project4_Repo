@@ -29,6 +29,13 @@
 import "DPI-C" function byte getch();
 `endif
 
+`ifdef SYNTHESIS
+module fpga_top(
+    input           clk,
+    input           resetb,
+    input           stall
+);
+`else
 `ifdef VERILATOR
 module testbench(
     input           clk,
@@ -38,6 +45,7 @@ module testbench(
 `else
 module testbench();
 `endif // VERILATOR
+`endif // SYNTHESIS
 
     `include "opcode.vh"
 
@@ -128,15 +136,10 @@ always @(posedge clk or negedge resetb) begin
         next_pc     <= `TOP.if_pc;
 
         if (next_pc == `TOP.if_pc)
-        begin
             count   <= count + 1;
-           // $display("next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
-        end
         else
-        begin
             count   <= 8'h0;
-           // $display("else+_next_pc = %0x  `TOP.if_pc = %0x  count = %0x resetb=%0x",next_pc,`TOP.if_pc,count,resetb);
-        end
+
         if (count > 100) begin
             $display("Executing timeout");
             #10 $finish(2);
@@ -154,6 +157,126 @@ always @(posedge clk) begin
 end
 `endif
 `endif // SYNTHESIS
+
+`ifdef SINGLE_RAM
+
+    wire            mem_ready;
+    wire            mem_valid;
+    wire            mem_we;
+    wire    [31: 0] mem_addr;
+    wire            mem_rresp;
+    wire    [31: 0] mem_rdata;
+    wire    [31: 0] mem_wdata;
+    wire    [ 3: 0] mem_wstrb;
+    wire            ready;
+
+    assign mem_valid = 1'b1;
+    assign interrupt = ex_irq;
+
+    assign ready =
+        (mem_ready && mem_we &&
+         (mem_addr == MMIO_PUTC ||
+          mem_addr == MMIO_GETC ||
+          mem_addr == MMIO_EXIT)) ? 1'b0 : mem_ready;
+
+    top top (
+        .clk        (clk),
+        .resetb     (resetb),
+
+        .stall      (stall),
+        .exception  (exception),
+
+        .ex_irq     (ex_irq),
+        .interrupt  (interrupt),
+
+        .mem_ready  (mem_ready),
+        .mem_valid  (mem_valid),
+        .mem_we     (mem_we),
+        .mem_addr   (mem_addr),
+        .mem_rresp  (mem_rresp),
+        .mem_rdata  (mem_rdata),
+        .mem_wdata  (mem_wdata),
+        .mem_wstrb  (mem_wstrb)
+    );
+
+    mem1port # (
+        .SIZE(IRAMSIZE+DRAMSIZE),
+        .FILE("memory.bin")
+    ) mem (
+        .clk   (clk),
+        .resetb(resetb),
+
+        .ready (ready),
+        .we    (mem_we),
+        .addr  (mem_addr[31:2]),
+        .rresp (mem_rresp),
+        .rdata (mem_rdata),
+        .wdata (mem_wdata),
+        .wstrb (mem_wstrb)
+    );
+
+`ifndef SYNTHESIS
+    // check memory range
+    always @(posedge clk) begin
+        if (mem_ready && mem_we && mem_addr == MMIO_PUTC) begin
+            $write("%c", mem_wdata[7:0]);
+            $fflush;
+        end
+        else if (mem_ready && !mem_we && mem_addr == MMIO_GETC) begin
+            `ifdef VERILATOR
+            mem_rdata[ 7: 0] <= getch();
+            `else
+            // TODO
+            mem_rdata[ 7: 0] <= 8'h78; // $fgetc(STDIN);
+            `endif
+            mem_rdata[31: 8] <= 'd0;
+        end
+        else if (mem_ready && mem_we && mem_addr == MMIO_EXIT) begin
+            printStatistics();
+            #10 $finish(1);
+        end
+        else if (mem_ready &&
+                 mem_addr[31:$clog2(DRAMSIZE+IRAMSIZE)] != 'd0) begin
+            $display("DMEM address %x out of range", mem_addr);
+            #10 $finish(2);
+        end
+    end
+
+    // syscall
+    always @(posedge clk) begin
+        if (`TOP.wb_system && !`TOP.wb_stall) begin
+            if (`TOP.wb_break == 2'b00 && `TOP.regs[REG_A7] == SYS_EXIT) begin
+                printStatistics();
+                #10 $finish(2);
+            end else if (`TOP.wb_break == 2'b00 && `TOP.regs[REG_A7] == SYS_WRITE &&
+                `TOP.regs[REG_A0] == 32'h1) begin // stdout
+                for (i = 0; i < `TOP.regs[REG_A2]; i = i + 1) begin
+                    $write("%c", mem.getb(`TOP.regs[REG_A1] + i));
+                end
+                /* verilator lint_off IGNOREDRETURN */
+                `TOP.set_reg(REG_A0, `TOP.regs[REG_A2]);
+                /* verilator lint_on IGNOREDRETURN */
+                $fflush;
+            end else if (`TOP.wb_break == 2'b00 && `TOP.regs[REG_A7] == SYS_READ &&
+                `TOP.regs[REG_A0] == 32'h0) begin // stdin
+                // TODO
+            end else if (`TOP.wb_break == 2'b00 && `TOP.regs[REG_A7] == SYS_DUMP && dump != 0) begin
+                for (i = `TOP.regs[REG_A0]; i < `TOP.regs[REG_A1]; i = i + 4) begin
+                    $fdisplay(dump, "%02x%02x%02x%02x", mem.getb(i + 3),
+                                                        mem.getb(i + 2),
+                                                        mem.getb(i + 1),
+                                                        mem.getb(i + 0));
+                end
+            end else if (`TOP.wb_break == 2'b00 && `TOP.regs[REG_A7] == SYS_DUMP_BIN && dump != 0) begin
+                for (i = `TOP.regs[REG_A0]; i < `TOP.regs[REG_A1]; i = i + 1) begin
+                    $fwrite(dump, "%c", mem.getb(i));
+                end
+            end
+        end
+    end
+`endif // SYNTHESIS
+
+`else // SINGLE_RAM
 
     wire            imem_ready;
     wire            imem_valid;
@@ -245,8 +368,8 @@ end
         .wready(1'b0),
         .rresp (imem_rresp),
         .rdata (imem_rdata),
-        //.raddr (imem_addr[31:2]-(IRAMBASE/4)),				
-        .raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
+        .raddr (imem_addr[31:2]-(IRAMBASE/4)),				
+        //.raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
         .waddr (30'h0),
         .wdata (32'h0),
         .wstrb (4'h0)
@@ -264,8 +387,13 @@ end
         .wready(wready & dmem_wvalid),
         .rresp (dmem_rresp),
         .rdata (dmem_rdata),
-        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
+        			
+        //`ifdef RV32C_ENABLED
         //.raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
+        //`else
+        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),
+        //`endif
+        
         .waddr (dmem_waddr[31:2]-(DRAMBASE/4)),
         .wdata (dmem_wdata),
         .wstrb (dmem_wstrb)
@@ -337,7 +465,7 @@ end
     end
 `endif // SYNTHESIS
 
-//`endif // SINGLE_RAM
+`endif // SINGLE_RAM
 
 `ifndef SYNTHESIS
 `ifdef TRACE
