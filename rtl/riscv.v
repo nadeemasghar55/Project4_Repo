@@ -639,10 +639,10 @@ always @(posedge clk or negedge resetb) begin
         	`ifdef RV32C_ENABLED
         	fetch_pc           <= //(c_valid) ? (if_pc + EX_NEXT_PC) :
                	                //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
-               	               
+               	                (ex_insn[6:0] == OP_BRANCH) ? {next_pc[31:1], 1'b0} : 
                	                ((inst == NOP) && !illegal_com_ins && compressed_ins && c_valid && ex_flush) ? (fetch_pc + 4):
      
-               	                (c_valid || (ex_c_valid && !ex_jal && !ex_jalr )) ? (if_pc + 2) :
+               	                (c_valid || (ex_c_valid && !ex_jal && !ex_jalr)) ? (if_pc + 2) :
                	                (ex_flush) ? (fetch_pc + 4) :
                	                (ex_trap)  ? (ex_trap_pc)   :
                	                {next_pc[31:1], 1'b0};
