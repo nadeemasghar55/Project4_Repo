@@ -1,0 +1,6 @@
+*.bin
+*.log
+*.o
+*.elf
+*.dis
+*.symbol
