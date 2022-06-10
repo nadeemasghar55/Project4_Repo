@@ -201,6 +201,9 @@ assign c_branch_kill        = (wb_branch && c_valid);
 
 assign inst                 = (flush || ex_c_valid || illegal_com_ins || (ex_flush && wb_flush && compressed_ins && !c_valid) || c_branch_kill) ? NOP : if_insn;
 
+//	|| (wb_jal && !compressed_ins)) 		for not letting the next inst after jal to enter execution stage, but it is getting resolved through flush. 
+
+
 //assign inst                 = (flush || illegal_com_ins || (ex_flush && wb_flush && compressed_ins && !c_valid) || c_branch_kill) ? NOP : if_insn;
 
 //assign inst                 = (flush || ex_c_valid || (ex_flush && compressed_ins) || c_branch_kill) ? NOP : if_insn;
