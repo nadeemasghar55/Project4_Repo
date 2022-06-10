@@ -152,7 +152,11 @@ module riscv (
     reg             [31: 0] wb_wdata;
     reg             [31: 0] wb_rdata;
     wire                    wb_flush;
-
+    
+    // C- Extension
+    reg 		     wb_jal;
+    //
+    
     reg                     ex_ill_csr;
 
     reg             [63: 0] csr_cycle;
@@ -178,8 +182,8 @@ module riscv (
 `ifdef RV32C_ENABLED
     wire c_valid = compressed_ins && !illegal_com_ins && !ex_c_valid;
 
-assign IF_NEXT_PC = compressed_ins ? 2 : 4;
-assign EX_NEXT_PC = compressed_ins ? 2 : 4;
+assign IF_NEXT_PC = compressed_ins ? 2 : (inst == NOP && ex_c_valid) ? 2 : 4;
+assign EX_NEXT_PC = compressed_ins ? 2 : (inst == NOP && ex_c_valid) ? 2 : 4;
 `else
 assign IF_NEXT_PC = 4;
 assign EX_NEXT_PC = 4;
@@ -737,6 +741,10 @@ always @(posedge clk or negedge resetb) begin
     end else if (!ex_stall && !(wb_memwr && !dmem_wvalid)) begin
         wb_nop              <= wb_branch;
         wb_nop_more         <= wb_nop;
+        
+        `ifdef RV32C_ENABLED
+        wb_jal              <= ex_jal;
+        `endif
     end
 end
 
