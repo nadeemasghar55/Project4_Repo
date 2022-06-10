@@ -2,16 +2,15 @@
 include ../common/Makefile.common
 
 EXE      = .elf
-SRC      = even_odd.S
-src      = even_odd.c
+SRC      = C.S
 CFLAGS  += -L../common
 LDFLAGS += -T ../common/default.ld
-TARGET   = even_odd
+TARGET   = C
 OUTPUT   = $(TARGET)$(EXE)
 
 .PHONY: all clean
 
-all:  $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(OUTPUT) $(SRC) $(LDFLAGS)
@@ -23,5 +22,3 @@ $(TARGET): $(SRC)
 
 clean:
 	$(RM) *.o $(OUTPUT) $(TARGET).dis $(TARGET).symbol [id]mem.bin memory.bin
-assemble:
-		$(CC) $(src) -S -o $(SRC) $(ARCH)

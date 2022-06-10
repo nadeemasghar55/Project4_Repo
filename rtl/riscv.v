@@ -237,10 +237,20 @@ always @(posedge clk or negedge resetb) begin
     if (!resetb) begin
         if_pc               <= RESETVEC;
     end else if (!wb_stall) begin
+    //`ifdef RV32C_ENABLED
+    //if(c_valid && (inst == 32'h00008067))
+    	//if_pc <= if_pc+2;
+      
+        //else
+          
+
         if_pc               <= fetch_pc;
+         
+        
         //if_pc               <= c_valid ? if_pc + 2 : fetch_pc;
         //IF_NEXT_PC 	     <= compressed_ins ? 2 : 4;
     end
+    //`endif
 end
 
 ////////////////////////////////////////////////////////////
@@ -624,8 +634,8 @@ always @(posedge clk or negedge resetb) begin
                	                //(ex_flush) ? (fetch_pc + EX_NEXT_PC) :
                	               
                	                ((inst == NOP) && !illegal_com_ins && compressed_ins && c_valid && ex_flush) ? (fetch_pc + 4):
+     
                	                (c_valid || (ex_c_valid && !ex_jal && !ex_jalr )) ? (if_pc + 2) :
-               	                //(c_valid) ? (if_pc + 2) :
                	                (ex_flush) ? (fetch_pc + 4) :
                	                (ex_trap)  ? (ex_trap_pc)   :
                	                {next_pc[31:1], 1'b0};
