@@ -38,8 +38,12 @@ module mem2ports # (
     input               wready,
     output reg          rresp,
     output reg  [31: 0] rdata,
-    //input       [31: 2] raddr,					
-    input       [31: 1] raddr,						// C-Extension
+    
+    //`ifdef RV32C_Enabled					
+    //input       [31: 1] raddr,						// C-Extension
+    //`else
+    input       [31: 2] raddr,
+    //`endif
     input       [31: 2] waddr,
     input       [31: 0] wdata,
     input       [ 3: 0] wstrb
@@ -131,17 +135,20 @@ always @(posedge clk) begin
             rdata[8*2+7:8*2] <= (wstrb[2]) ? wdata[8*2+7:8*2] : ram[radr][8*2+7:8*2];
             rdata[8*3+7:8*3] <= (wstrb[3]) ? wdata[8*3+7:8*3] : ram[radr][8*3+7:8*3];
         end else begin
-            //rdata <= ram[radr];
-            case(raddr[1])									// C-Extension
-                1'b1: begin									// half-word-aligned
-                    rdata[8*0+7:8*0] <= ram[radr  ][8*2+7:8*2];
-                    rdata[8*1+7:8*1] <= ram[radr  ][8*3+7:8*3];
-                    rdata[8*2+7:8*2] <= ram[radr+1][8*0+7:8*0];
-                    rdata[8*3+7:8*3] <= ram[radr+1][8*1+7:8*1];
-                end
-                default: rdata <= ram[radr];							// word-aligned
-            endcase;
             
+            //`ifdef RV32C_ENABLED
+            //case(raddr[1])									// C-Extension
+            //    1'b1: begin									// half-word-aligned
+            //        rdata[8*0+7:8*0] <= ram[radr  ][8*2+7:8*2];
+            //        rdata[8*1+7:8*1] <= ram[radr  ][8*3+7:8*3];
+            //        rdata[8*2+7:8*2] <= ram[radr+1][8*0+7:8*0];
+            //        rdata[8*3+7:8*3] <= ram[radr+1][8*1+7:8*1];
+            //    end
+            //    default: rdata <= ram[radr];							// word-aligned
+            //endcase;
+            //`else
+            rdata <= ram[radr];
+            //`endif
         end
     end
 

@@ -368,8 +368,8 @@ end
         .wready(1'b0),
         .rresp (imem_rresp),
         .rdata (imem_rdata),
-        //.raddr (imem_addr[31:2]-(IRAMBASE/4)),				
-        .raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
+        .raddr (imem_addr[31:2]-(IRAMBASE/4)),				
+        //.raddr (imem_addr[31:1]-(IRAMBASE/2)),				// C-Extension
         .waddr (30'h0),
         .wdata (32'h0),
         .wstrb (4'h0)
@@ -387,8 +387,13 @@ end
         .wready(wready & dmem_wvalid),
         .rresp (dmem_rresp),
         .rdata (dmem_rdata),
-        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),				
+        			
+        //`ifdef RV32C_ENABLED
         //.raddr (dmem_raddr[31:1]-(DRAMBASE/2)),				// C-Extension
+        //`else
+        .raddr (dmem_raddr[31:2]-(DRAMBASE/4)),
+        //`endif
+        
         .waddr (dmem_waddr[31:2]-(DRAMBASE/4)),
         .wdata (dmem_wdata),
         .wstrb (dmem_wstrb)
@@ -526,9 +531,9 @@ end
 
 always @(posedge clk) begin
     if ($test$plusargs("trace") != 0 && !`TOP.wb_stall && !`TOP.stall_r &&
-        !`TOP.wb_flush && fillcount == 2'b11) begin
+        !`TOP.wb_flush && fillcount == 2'b11 &&`TOP.wb_insn!=NOP) begin
         `ifdef PRINT_TIMELOG
-        $fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
+        //$fwrite(fp, "%d ", top.riscv.csr_cycle[31:0]);
         `endif
         $fwrite(fp, "%08x %08x", `TOP.wb_pc, `TOP.wb_insn);
         if (`TOP.wb_mem2reg && !`TOP.wb_ld_align_excp) begin
@@ -540,8 +545,17 @@ always @(posedge clk) begin
                 $fwrite(fp, "\n");
             end
         end else if (`TOP.wb_alu2reg) begin
-            $fwrite(fp, " x%02d (%0s) <= 0x%08x\n", `TOP.wb_dst_sel, regname,
+        //`ifdef RV32C_ENABLED
+        //	if(`TOP.wb_insn==32'h00008067)
+           	//	 $fwrite(fp, " x%02d (%0s) <= 0x%08x\n", (`TOP.wb_dst_sel), regname,
+                               //            			`TOP.wb_result-2);
+             //else
+            	//	 $fwrite(fp, " x%02d (%0s) <= 0x%08x\n", `TOP.wb_dst_sel, regname,
+                          //                          `TOP.wb_result);
+         //`else
+         		$fwrite(fp, " x%02d (%0s) <= 0x%08x\n", `TOP.wb_dst_sel, regname,
                                                     `TOP.wb_result);
+                         
         end else if (`TOP.dmem_wready) begin
             case(`TOP.wb_alu_op)
                 3'h0: begin
